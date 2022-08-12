@@ -1,0 +1,11 @@
+/client/node_modules
+/client/.env.local
+/client/.umirc.local.ts
+/client/config/config.local.ts
+/client/src/.umi
+/client/src/.umi-production
+/client/src/.umi-test
+/client/dist
+
+/node_modules
+/.env
