@@ -22,6 +22,22 @@ export default defineConfig({
           path: '/home',
           component: 'home/index',
         },
+        {
+          path: '/callback',
+          component: 'callback/index',
+        },
+        {
+          path: '/discover',
+          component: 'discover/index',
+        },
+        {
+          path: '/friends',
+          component: 'friends/index',
+        },
+        {
+          path: '/me',
+          component: 'me/index',
+        },
       ],
     },
   ],

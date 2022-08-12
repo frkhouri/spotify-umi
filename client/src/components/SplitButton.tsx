@@ -58,7 +58,7 @@ export function SplitButton({
   menuVariant = 'filled',
   menuItems,
 }: SplitButtonProps) {
-  const { classes, theme } = useStyles();
+  const { classes } = useStyles();
 
   return (
     <Group noWrap spacing={0}>

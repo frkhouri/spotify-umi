@@ -1,23 +1,15 @@
-import { Link, Outlet } from 'umi';
+import { Navbar } from '@/components';
+import { Affix } from '@mantine/core';
+import { Outlet } from 'umi';
 
 const Layout = () => {
   return (
-    <>
-      <div>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/docs">Docs</Link>
-          </li>
-          <li>
-            <a href="https://github.com/umijs/umi">Github</a>
-          </li>
-        </ul>
-        <Outlet />
-      </div>
-    </>
+    <div>
+      <Outlet />
+      <Affix position={{ bottom: 0, left: 0, right: 0 }}>
+        <Navbar />
+      </Affix>
+    </div>
   );
 };
 
