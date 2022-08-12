@@ -9,6 +9,11 @@ export default defineConfig({
       wrappers: ['@/wrappers/notifications'],
     },
     {
+      path: '/callback',
+      component: 'callback/index',
+      wrappers: ['@/wrappers/notifications'],
+    },
+    {
       path: '/',
       component: '@/layouts/nav',
       wrappers: ['@/wrappers/auth', '@/wrappers/notifications'],
@@ -16,10 +21,6 @@ export default defineConfig({
         {
           path: '/home',
           component: 'home/index',
-        },
-        {
-          path: '/callback',
-          component: 'callback/index',
         },
       ],
     },
