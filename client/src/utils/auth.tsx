@@ -1,6 +1,6 @@
 type tokens = {
   accessToken: string;
-  refreshToken: string;
+  refreshToken?: string;
   expiryDate: Date;
 };
 
@@ -10,7 +10,7 @@ export const setLocalStorage = ({
   expiryDate,
 }: tokens) => {
   localStorage.setItem('access_token', accessToken);
-  localStorage.setItem('refresh_token', refreshToken);
+  refreshToken && localStorage.setItem('refresh_token', refreshToken);
   localStorage.setItem(
     'expiry_date',
     `${expiryDate.toDateString()} ${expiryDate.toTimeString()}`,

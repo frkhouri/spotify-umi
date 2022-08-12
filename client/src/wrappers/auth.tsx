@@ -33,14 +33,16 @@ const getAccessToken = async () => {
     });
 
     let expiresIn = '';
-    ({ accessToken, refreshToken, expiresIn } = await axiosAuth
+    ({ accessToken, expiresIn } = await axiosAuth
       .get('/refresh-token')
       .then((res) => res.data));
 
     const expiryDate = new Date();
     expiryDate.setSeconds(expiryDate.getSeconds() + Number(expiresIn));
-    if (accessToken && refreshToken && expiryDate) {
-      setLocalStorage({ accessToken, refreshToken, expiryDate });
+    if (accessToken && expiryDate) {
+      setLocalStorage({ accessToken, expiryDate });
+    } else {
+      history.replace('/login');
     }
   }
 

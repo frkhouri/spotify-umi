@@ -9,9 +9,11 @@ import { Outlet } from 'umi';
 axios.interceptors.response.use(
   (res) => res,
   (e) => {
-    console.log('this one', e);
-    const { title, message } = e.response.data;
-    showNotification({ title, message, color: 'red', icon: <X /> });
+    console.log(e);
+    if (e.response.data) {
+      const { title, message } = e.response.data;
+      showNotification({ title, message, color: 'red', icon: <X /> });
+    }
   },
 );
 

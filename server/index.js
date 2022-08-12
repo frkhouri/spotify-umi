@@ -59,13 +59,14 @@ app.get('/api/callback', async (req, res) => {
 });
 
 app.get('/api/refresh-token', async (req, res) => {
-  const { access_token, refresh_token, expires_in } = (
-    await req.spotifyUser.refreshAccessToken()
-  ).body;
+  const data = await req.spotifyUser
+    .refreshAccessToken()
+    .catch((e) => console.log(e));
+
+  const { access_token, expires_in } = data.body;
 
   res.json({
     accessToken: access_token,
-    refreshToken: refresh_token,
     expiresIn: expires_in,
   });
 });
