@@ -1,21 +1,68 @@
-import { Me } from '@/dtos';
+import { SplitButton } from '@/components';
+import { createStyles } from '@mantine/core';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import {
+  Armchair2,
+  Bolt,
+  CloudStorm,
+  Dice5,
+  MoodHappy,
+} from 'tabler-icons-react';
+
+const useStyles = createStyles(() => ({}));
 
 export default function HomePage() {
-  const [me, setMe] = useState<Me>({} as Me);
+  const { theme } = useStyles();
+  const minThreshold = 0.8;
+  const maxThreshold = 0.2;
+  const menuIconColor =
+    theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 5 : 6];
 
-  useEffect(() => {
-    const getMe = async () => {
-      const data = await axios.get('/me').then((res) => res.data);
-      setMe(data);
-    };
-    getMe().catch((e) => console.log(e));
-  }, []);
+  const handleClick = async (attribute?: string, threshold?: number) => {
+    console.log(attribute);
+    await axios.get('/im-feeling-lucky', {
+      params: {
+        ...(attribute && {
+          [attribute]: threshold,
+        }),
+      },
+    });
+  };
+
+  const menuItems = [
+    {
+      text: 'Energetic',
+      icon: <Bolt color={menuIconColor} />,
+      onClick: () => handleClick('min_energy', minThreshold),
+    },
+    {
+      text: 'Chill',
+      icon: <Armchair2 color={menuIconColor} />,
+      onClick: () => handleClick('max_energy', maxThreshold),
+    },
+    {
+      text: 'Happy',
+      icon: <MoodHappy color={menuIconColor} />,
+      onClick: () => handleClick('min_valence', minThreshold),
+    },
+    {
+      text: 'Moody',
+      icon: <CloudStorm color={menuIconColor} />,
+      onClick: () => handleClick('max_valence', maxThreshold),
+    },
+  ];
 
   return (
     <>
-      <p>{me.display_name}</p>
+      <SplitButton
+        text={"I'm Feeling Lucky"}
+        fullWidth={true}
+        variant={'gradient'}
+        gradient={{ from: 'indigo', to: 'cyan' }}
+        leftIcon={<Dice5 />}
+        onClick={() => handleClick()}
+        menuItems={menuItems}
+      />
     </>
   );
 }

@@ -76,6 +76,50 @@ app.get('/api/me', async (req, res) => {
   res.json(me.body);
 });
 
+app.get('/api/im-feeling-lucky', async (req, res) => {
+  const devices = await req.spotifyUser
+    .getMyDevices()
+    .catch((e) => console.log(e));
+
+  if (devices.body.devices.length === 0) {
+    res
+      .status(400)
+      .json({ title: 'Could not play', message: 'No devices found' });
+    return;
+  }
+
+  const playback = await req.spotifyUser
+    .getMyCurrentPlaybackState()
+    .catch((e) => console.log(e));
+
+  if (playback.statusCode === 204) {
+    if (devices.body.devices.length === 1) {
+      await req.spotifyUser
+        .transferMyPlayback([devices.body.devices[0].id])
+        .catch((e) => console.log(e));
+    }
+  }
+
+  const recentTracks = await req.spotifyUser
+    .getMyRecentlyPlayedTracks({ limit: 5 })
+    .catch((e) => console.log(e));
+  const recentTrackIds = recentTracks.body.items.map((item) => item.track.id);
+
+  const recommendedTracks = await req.spotifyUser
+    .getRecommendations({
+      seed_tracks: recentTrackIds.join(','),
+      ...req.query,
+    })
+    .catch((e) => console.log(e));
+  const recommendedTrackUris = recommendedTracks.body.tracks.map(
+    (track) => track.uri,
+  );
+
+  await req.spotifyUser.play({ uris: recommendedTrackUris });
+
+  res.send();
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
