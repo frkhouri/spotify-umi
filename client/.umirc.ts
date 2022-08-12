@@ -6,11 +6,12 @@ export default defineConfig({
     {
       path: '/login',
       component: 'login/index',
+      wrappers: ['@/wrappers/notifications'],
     },
     {
       path: '/',
       component: '@/layouts/nav',
-      wrappers: ['@/wrappers/auth'],
+      wrappers: ['@/wrappers/auth', '@/wrappers/notifications'],
       routes: [
         {
           path: '/home',
