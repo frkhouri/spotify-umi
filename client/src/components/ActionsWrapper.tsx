@@ -61,7 +61,11 @@ export function ActionsWrapper({
 const useStyles = createStyles((theme) => ({
   chipGroup: {
     overflow: 'auto',
-    padding: '0 5px 7px 5px',
+    padding: '7px 5px',
+    margin: '0px 1px',
+    borderTopStyle: 'solid',
+    borderTopWidth: 'thin',
+    borderColor: theme.colors.gray[6],
     scrollbarWidth: 'none',
     '::-webkit-scrollbar': {
       display: 'none',

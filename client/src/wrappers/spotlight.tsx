@@ -53,10 +53,11 @@ const withSpotlight = () => {
   return (
     <SpotlightProvider
       actions={actions}
-      searchIcon={<Search size={18} />}
+      searchIcon={<Search size={16} />}
       searchPlaceholder="Search for anything"
       onChange={(e) => onSearchChange(e)}
       onSpotlightClose={() => setActions([])}
+      transition="fade"
       actionsWrapperComponent={(e) =>
         ActionsWrapper({
           children: e.children,
@@ -64,7 +65,12 @@ const withSpotlight = () => {
           setTypes: setTypes,
         })
       }
-      classNames={{ actions: classes.actions }}
+      classNames={{
+        root: classes.root,
+        inner: classes.inner,
+        searchInput: classes.searchInput,
+        actions: classes.actions,
+      }}
     >
       <Outlet />
     </SpotlightProvider>
@@ -73,7 +79,19 @@ const withSpotlight = () => {
 
 export default withSpotlight;
 
-const useStyles = createStyles(() => ({
+const useStyles = createStyles((theme) => ({
+  root: {
+    padding: '8px',
+  },
+  inner: {
+    paddingTop: '0px',
+  },
+  searchInput: {
+    minHeight: '36px',
+    height: '36px',
+    paddingTop: '5px',
+    paddingBottom: '7px',
+  },
   actions: {
     overflow: 'auto',
     maxHeight: '400px',
