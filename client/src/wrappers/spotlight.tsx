@@ -1,33 +1,10 @@
-import { Avatar, Chip } from '@mantine/core';
+import { ActionsWrapper } from '@/components';
+import { Avatar } from '@mantine/core';
 import { SpotlightProvider } from '@mantine/spotlight';
 import axios from 'axios';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Search } from 'tabler-icons-react';
 import { Outlet } from 'umi';
-
-function ActionsWrapper({
-  children,
-  types,
-  setTypes,
-}: {
-  children: React.ReactNode;
-  types: string[];
-  setTypes: Dispatch<SetStateAction<string[]>>;
-}) {
-  return (
-    <div>
-      <Chip.Group position="center" multiple value={types} onChange={setTypes}>
-        <Chip value="album">Albums</Chip>
-        <Chip value="artist">Artists</Chip>
-        <Chip value="playlist">Playlists</Chip>
-        <Chip value="track">Tracks</Chip>
-        <Chip value="show">Shows</Chip>
-        <Chip value="episode">Episodes</Chip>
-      </Chip.Group>
-      {children}
-    </div>
-  );
-}
 
 const withSpotlight = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -67,8 +44,8 @@ const withSpotlight = () => {
 
   const onSearchChange = (e: React.FormEvent<HTMLDivElement>) => {
     console.log(e);
-    if (!e.target.className.includes('Chip')) {
-      setSearchTerm(e.target.value);
+    if (!(e.target as HTMLInputElement).className.includes('Chip')) {
+      setSearchTerm((e.target as HTMLInputElement).value);
     }
   };
 
