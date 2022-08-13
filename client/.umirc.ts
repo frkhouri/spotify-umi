@@ -16,7 +16,11 @@ export default defineConfig({
     {
       path: '/',
       component: '@/layouts/nav',
-      wrappers: ['@/wrappers/auth', '@/wrappers/notifications'],
+      wrappers: [
+        '@/wrappers/auth',
+        '@/wrappers/notifications',
+        '@/wrappers/spotlight',
+      ],
       routes: [
         {
           path: '/home',

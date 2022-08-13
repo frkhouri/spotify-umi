@@ -120,6 +120,34 @@ app.get('/api/im-feeling-lucky', async (req, res) => {
   res.send();
 });
 
+app.get('/api/search', async (req, res) => {
+  const { searchTerm, types } = req.query;
+  const limit = Math.round(10 / types?.length);
+  const results = await req.spotifyUser
+    .search(searchTerm, types, { limit })
+    .catch((e) => console.log(e));
+
+  const data = [];
+  Object.values(results.body).map((type) => {
+    type.items.map((item) => {
+      data.push({
+        id: item.id,
+        name: item.name,
+        image: item.images?.length
+          ? item.images[item.images.length - 1].url
+          : item.album?.images
+          ? item.album.images[item.album.images.length - 1].url
+          : '',
+        type: item.type,
+      });
+      return;
+    });
+    return;
+  });
+
+  res.json(data);
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
