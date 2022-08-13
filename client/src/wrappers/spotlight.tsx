@@ -1,10 +1,11 @@
 import { ActionsWrapper } from '@/components';
+import { SearchResult } from '@/dtos';
 import { Avatar, createStyles } from '@mantine/core';
 import { SpotlightProvider } from '@mantine/spotlight';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Search } from 'tabler-icons-react';
-import { Outlet } from 'umi';
+import { history, Outlet } from 'umi';
 
 const withSpotlight = () => {
   const { classes } = useStyles();
@@ -19,32 +20,31 @@ const withSpotlight = () => {
             .get('/search', {
               params: {
                 ...(searchTerm && {
-                  searchTerm: searchTerm,
+                  searchTerm,
                 }),
                 types,
               },
             })
             .then((res) => res.data)
         : [];
-      console.log(results);
+
       results &&
         setActions(
-          results?.map((result) => {
+          results?.map((result: SearchResult) => {
             return {
               title: result.name,
-              onTrigger: () => console.log(result.name),
+              onTrigger: () => history.push(`${result.type}/${result.id}`),
               icon: <Avatar src={result.image} />,
+              group: `${result.type}s`,
             };
           }),
         );
-      console.log(actions);
     }, 750);
 
     return () => clearTimeout(search);
   }, [searchTerm, types]);
 
   const onSearchChange = (e: React.FormEvent<HTMLDivElement>) => {
-    console.log(e);
     if (!(e.target as HTMLInputElement).className.includes('Chip')) {
       setSearchTerm((e.target as HTMLInputElement).value);
     }

@@ -41,14 +41,14 @@ export function ActionsWrapper({
   return (
     <div>
       <Chip.Group
-        position="center"
         multiple
         value={types}
+        noWrap
         onChange={setTypes}
         className={classes.chipGroup}
       >
         {chips.map((chip) => (
-          <Chip value={chip.value} key={chip.value} className={classes.chip}>
+          <Chip value={chip.value} variant="filled" size="sm" key={chip.value}>
             {chip.text}
           </Chip>
         ))}
@@ -61,16 +61,10 @@ export function ActionsWrapper({
 const useStyles = createStyles((theme) => ({
   chipGroup: {
     overflow: 'auto',
-    display: 'block',
-    whiteSpace: 'nowrap',
     padding: '0 5px 7px 5px',
     scrollbarWidth: 'none',
     '::-webkit-scrollbar': {
       display: 'none',
     },
-  },
-  chip: {
-    display: 'inline-block',
-    margin: '0px 3px',
   },
 }));

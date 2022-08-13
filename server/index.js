@@ -121,9 +121,8 @@ app.get('/api/im-feeling-lucky', async (req, res) => {
 });
 
 app.get('/api/search', async (req, res) => {
-  console.log(req.query);
   const { searchTerm, types } = req.query;
-  const limit = Math.round(10 / types.length);
+  const limit = Math.round(10 / types?.length);
   const results = await req.spotifyUser
     .search(searchTerm, types, { limit })
     .catch((e) => console.log(e));
@@ -134,7 +133,11 @@ app.get('/api/search', async (req, res) => {
       data.push({
         id: item.id,
         name: item.name,
-        image: item.images[item.images.length - 1]?.url,
+        image: item.images?.length
+          ? item.images[item.images.length - 1].url
+          : item.album?.images
+          ? item.album.images[item.album.images.length - 1].url
+          : '',
         type: item.type,
       });
       return;
