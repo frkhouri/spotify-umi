@@ -37,13 +37,13 @@ app.use((req, res, next) => {
   req.spotifyUser = spotifyUser;
   next();
 });
-app.use(express.static(path.resolve(__dirname, '../client/build')));
+app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
 const generateRandomString = (N) =>
   (Math.random().toString(36) + Array(N).join('0')).slice(2, N + 2);
 
 app.get('*', (_req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
 });
 
 app.get('/api/login', (_req, res) => {
