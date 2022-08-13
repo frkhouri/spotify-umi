@@ -1,5 +1,5 @@
 import { ActionsWrapper } from '@/components';
-import { Avatar } from '@mantine/core';
+import { Avatar, createStyles } from '@mantine/core';
 import { SpotlightProvider } from '@mantine/spotlight';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -7,6 +7,7 @@ import { Search } from 'tabler-icons-react';
 import { Outlet } from 'umi';
 
 const withSpotlight = () => {
+  const { classes } = useStyles();
   const [searchTerm, setSearchTerm] = useState('');
   const [actions, setActions] = useState([]);
   const [types, setTypes] = useState(['album', 'artist', 'playlist']);
@@ -63,6 +64,7 @@ const withSpotlight = () => {
           setTypes: setTypes,
         })
       }
+      classNames={{ actions: classes.actions }}
     >
       <Outlet />
     </SpotlightProvider>
@@ -70,3 +72,10 @@ const withSpotlight = () => {
 };
 
 export default withSpotlight;
+
+const useStyles = createStyles(() => ({
+  actions: {
+    overflow: 'auto',
+    maxHeight: '400px',
+  },
+}));
