@@ -123,19 +123,26 @@ app.get('/api/im-feeling-lucky', async (req, res) => {
 app.get('/api/search', async (req, res) => {
   console.log(req.query);
   const { searchTerm, types } = req.query;
+  const limit = Math.round(10 / types.length);
   const results = await req.spotifyUser
-    .search(searchTerm, types, { limit: 5 })
+    .search(searchTerm, types, { limit })
     .catch((e) => console.log(e));
-  console.log(results);
-  const artists = results.body.artists.items.map((artist) => {
-    return {
-      id: artist.id,
-      name: artist.name,
-      image: artist.images[artist.images.length - 1]?.url,
-    };
+
+  const data = [];
+  Object.values(results.body).map((type) => {
+    type.items.map((item) => {
+      data.push({
+        id: item.id,
+        name: item.name,
+        image: item.images[item.images.length - 1]?.url,
+        type: item.type,
+      });
+      return;
+    });
+    return;
   });
 
-  res.json({ artists });
+  res.json(data);
 });
 
 app.listen(PORT, () => {

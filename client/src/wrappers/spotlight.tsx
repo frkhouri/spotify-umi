@@ -27,9 +27,9 @@ const withSpotlight = () => {
             .then((res) => res.data)
         : [];
       console.log(results);
-      results.artists &&
+      results &&
         setActions(
-          results?.artists?.map((result) => {
+          results?.map((result) => {
             return {
               title: result.name,
               onTrigger: () => console.log(result.name),
