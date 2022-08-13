@@ -1,4 +1,5 @@
 const Spotify = require('spotify-web-api-node');
+const path = require('path');
 const express = require('express');
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -16,7 +17,7 @@ const STATE_KEY = 'spotify_auth_state';
 const app = express();
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:8000'); // update to match the domain you will make the request from
+  res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
   res.header(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Access-Token, Refresh-Token, Expiry-Date',
@@ -36,9 +37,14 @@ app.use((req, res, next) => {
   req.spotifyUser = spotifyUser;
   next();
 });
+app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 const generateRandomString = (N) =>
   (Math.random().toString(36) + Array(N).join('0')).slice(2, N + 2);
+
+app.get('*', (_req, res) => {
+  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+});
 
 app.get('/api/login', (_req, res) => {
   const state = generateRandomString(16);
@@ -54,7 +60,7 @@ app.get('/api/callback', async (req, res) => {
     await spotifyApi.authorizationCodeGrant(req.query.code)
   ).body;
   res.redirect(
-    `http://localhost:8000/callback?access_token=${access_token}&refresh_token=${refresh_token}&expires_in=${expires_in}`,
+    `${process.env.DOMAIN}/callback?access_token=${access_token}&refresh_token=${refresh_token}&expires_in=${expires_in}`,
   );
 });
 
