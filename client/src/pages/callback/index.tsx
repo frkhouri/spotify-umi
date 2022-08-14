@@ -1,4 +1,4 @@
-import { setLocalStorage } from '@/utils/auth';
+import { setLocalStorage } from '@/utils';
 import { useEffect } from 'react';
 import { history, useLocation } from 'umi';
 
