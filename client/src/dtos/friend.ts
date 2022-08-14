@@ -1,4 +1,5 @@
 export type Friend = {
+  time: string;
   user: {
     name: string;
     id: string;

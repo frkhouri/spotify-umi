@@ -4,10 +4,13 @@ import { Avatar, Card, Grid, Group, Image, Text } from '@mantine/core';
 export const FriendCard = ({ friend }: { friend: Friend }) => {
   return (
     <Card shadow="sm" p="lg" radius="md" withBorder>
-      <Card.Section withBorder>
-        <Group>
-          <Avatar src={friend.user.image} radius="xl" size="lg" />
-          <Text weight={500}>{friend.user.name}</Text>
+      <Card.Section withBorder inheritPadding>
+        <Group position="apart">
+          <Group>
+            <Avatar src={friend.user.image} radius="xl" size="lg" />
+            <Text weight={500}>{friend.user.name}</Text>
+          </Group>
+          <Text>{friend.time}</Text>
         </Group>
       </Card.Section>
       <Grid>

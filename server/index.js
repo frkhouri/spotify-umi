@@ -2,9 +2,13 @@ const Spotify = require('spotify-web-api-node');
 const path = require('path');
 const express = require('express');
 const buddyList = require('spotify-buddylist');
+const dayjs = require('dayjs');
+const relativeTime = require('dayjs/plugin/relativeTime');
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
+
+dayjs.extend(relativeTime);
 
 const PORT = process.env.PORT || 3001;
 
@@ -163,6 +167,10 @@ app.get('/api/friends', async (req, res) => {
 
   const friendActivity = data.friends.map((friend) => {
     return {
+      time:
+        Date.now() - friend.timestamp > 900000
+          ? dayjs().to(dayjs(friend.timestamp), true)
+          : 'online',
       user: {
         name: friend.user.name,
         id: friend.user.uri.slice(friend.user.uri.indexOf('user:') + 5),
