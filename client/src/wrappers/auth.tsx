@@ -1,10 +1,10 @@
-import { setLocalStorage } from '@/utils/auth';
+import { setLocalStorage } from '@/utils';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { history, Outlet } from 'umi';
 
-// axios.defaults.baseURL = 'http://localhost:3001/api';
-axios.defaults.baseURL = 'https://spotify-4-app.herokuapp.com/api';
+axios.defaults.baseURL = 'http://localhost:3001/api';
+// axios.defaults.baseURL = 'https://spotify-4-app.herokuapp.com/api';
 axios.interceptors.request.use(async (config) => {
   const accessToken = await getAccessToken();
 

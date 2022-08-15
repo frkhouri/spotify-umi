@@ -16,9 +16,11 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.27.2",
+    "dayjs": "^1.11.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "nodemon": "^2.0.19",
+    "spotify-buddylist": "^1.0.0",
     "spotify-web-api-node": "^5.0.2"
   }
 }

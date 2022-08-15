@@ -1,9 +1,14 @@
 const Spotify = require('spotify-web-api-node');
 const path = require('path');
 const express = require('express');
+const buddyList = require('spotify-buddylist');
+const dayjs = require('dayjs');
+const relativeTime = require('dayjs/plugin/relativeTime');
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
+
+dayjs.extend(relativeTime);
 
 const PORT = process.env.PORT || 3001;
 
@@ -148,6 +153,69 @@ app.get('/api/search', async (req, res) => {
   });
 
   res.json(data);
+});
+
+app.get('/api/friends', async (req, res) => {
+  const { spDcCookie } = req.query;
+  const { accessToken } = await buddyList
+    .getWebAccessToken(spDcCookie)
+    .catch((e) => console.log(e));
+  const data = await buddyList
+    .getFriendActivity(accessToken)
+    .catch((e) => console.log(e));
+  console.log(data);
+
+  const friendActivity = data.friends.map((friend) => {
+    return {
+      time:
+        Date.now() - friend.timestamp > 900000
+          ? dayjs().to(dayjs(friend.timestamp), true)
+          : 'online',
+      user: {
+        name: friend.user.name,
+        id: friend.user.uri.slice(friend.user.uri.indexOf('user:') + 5),
+      },
+      track: {
+        name: friend.track.name,
+        id: friend.track.uri.slice(friend.track.uri.indexOf('track:') + 6),
+        image: friend.track.imageUrl,
+        artist: {
+          name: friend.track.artist.name,
+          id: friend.track.artist.uri.slice(
+            friend.track.artist.uri.indexOf('artist:') + 7,
+          ),
+        },
+      },
+      context: {
+        name: friend.track.context.name,
+        id: friend.track.context.uri.slice(
+          friend.track.context.uri.indexOf(':', 8),
+        ),
+        type: friend.track.context.uri.slice(
+          friend.track.context.uri.indexOf('spotify:') + 8,
+          friend.track.context.uri.indexOf(':', 8),
+        ),
+      },
+    };
+  });
+
+  const friends = await Promise.all(
+    friendActivity.map(async (friend) => {
+      const user = await req.spotifyUser
+        .getUser(friend.user.id)
+        .catch((e) => console.log(e));
+
+      return {
+        ...friend,
+        user: {
+          ...friend.user,
+          image: user.body.images.length ? user.body.images[0].url : '',
+        },
+      };
+    }),
+  );
+
+  res.json(friends);
 });
 
 app.get('*', (_req, res) => {

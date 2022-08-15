@@ -1,67 +1,56 @@
-import { SplitButton } from '@/components';
+import { FriendCard, FriendTokenInput } from '@/components';
+import { Friend } from '@/dtos';
 import { createStyles } from '@mantine/core';
 import axios from 'axios';
-import {
-  Armchair2,
-  Bolt,
-  CloudStorm,
-  Dice5,
-  MoodHappy,
-} from 'tabler-icons-react';
+import { useEffect, useState } from 'react';
 
 const useStyles = createStyles(() => ({}));
 
-export default function HomePage() {
+export default function FriendsPage() {
   const { theme } = useStyles();
-  const minThreshold = 0.8;
-  const maxThreshold = 0.2;
-  const menuIconColor =
-    theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 5 : 6];
+  const [friends, setFriends] = useState([]);
+  const [spDcCookie, setSpDcCookie] = useState('');
+  const [cookieExpired, setCookieExpired] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleClick = async (attribute?: string, threshold?: number) => {
-    await axios.get('/im-feeling-lucky', {
-      params: {
-        ...(attribute && {
-          [attribute]: threshold,
-        }),
-      },
-    });
+  const submit = ({ token, expiry }: { token: string; expiry: string }) => {
+    localStorage.setItem('sp_dc', token);
+    localStorage.setItem('sp_dc_expiry', expiry);
+    setSubmitted(true);
   };
 
-  const menuItems = [
-    {
-      text: 'Energetic',
-      icon: <Bolt color={menuIconColor} />,
-      onClick: () => handleClick('min_energy', minThreshold),
-    },
-    {
-      text: 'Chill',
-      icon: <Armchair2 color={menuIconColor} />,
-      onClick: () => handleClick('max_energy', maxThreshold),
-    },
-    {
-      text: 'Happy',
-      icon: <MoodHappy color={menuIconColor} />,
-      onClick: () => handleClick('min_valence', minThreshold),
-    },
-    {
-      text: 'Moody',
-      icon: <CloudStorm color={menuIconColor} />,
-      onClick: () => handleClick('max_valence', maxThreshold),
-    },
-  ];
+  useEffect(() => {
+    const getFriends = async () => {
+      const cookie = window.localStorage.getItem('sp_dc');
+      const expiry = window.localStorage.getItem('sp_dc_expiry');
+
+      if (cookie && expiry) {
+        setSpDcCookie(cookie);
+      }
+
+      const res = await axios.get('/friends', {
+        params: {
+          spDcCookie: cookie,
+        },
+      });
+
+      setFriends(res.data);
+    };
+
+    getFriends().catch((e) => console.log(e));
+  }, [submitted]);
 
   return (
     <>
-      <SplitButton
-        text={"I'm Feeling Lucky"}
-        fullWidth={true}
-        variant={'gradient'}
-        gradient={{ from: 'indigo', to: 'cyan' }}
-        leftIcon={<Dice5 />}
-        onClick={() => handleClick()}
-        menuItems={menuItems}
-      />
+      {spDcCookie ? (
+        friends.map((friend: Friend) => (
+          <FriendCard key={friend.user.id} friend={friend} />
+        ))
+      ) : (
+        <FriendTokenInput
+          submit={({ token, expiry }) => submit({ token, expiry })}
+        />
+      )}
     </>
   );
 }
