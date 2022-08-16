@@ -1,9 +1,7 @@
 import { Button, createStyles, SimpleGrid } from '@mantine/core';
-import { useSpotlight } from '@mantine/spotlight';
 import { Alien, Flame, Microphone, Playlist } from 'tabler-icons-react';
 
 export function HomeActions() {
-  const spotlight = useSpotlight();
   const { classes } = useStyles();
 
   const homeActions = [
@@ -42,6 +40,6 @@ export function HomeActions() {
 
 const useStyles = createStyles((theme) => ({
   button: {
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
   },
 }));
