@@ -5,8 +5,8 @@ export default function LoginPage() {
     <Container sx={loginWrapper}>
       <Button
         component="a"
-        href={'http://localhost:3001/api/login'}
-        // href={'https://spotify-4-app.herokuapp.com/api/login'}
+        // href={'http://localhost:3001/api/login'}
+        href={'https://spotify-4-app.herokuapp.com/api/login'}
         uppercase
         sx={loginButton}
       >
