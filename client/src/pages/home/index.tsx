@@ -1,5 +1,5 @@
-import { SplitButton } from '@/components';
-import { createStyles } from '@mantine/core';
+import { HomeActions, SplitButton } from '@/components';
+import { createStyles, Stack } from '@mantine/core';
 import axios from 'axios';
 import {
   Armchair2,
@@ -53,15 +53,18 @@ export default function HomePage() {
 
   return (
     <>
-      <SplitButton
-        text={"I'm Feeling Lucky"}
-        fullWidth={true}
-        variant={'gradient'}
-        gradient={{ from: 'indigo', to: 'cyan' }}
-        leftIcon={<Dice5 />}
-        onClick={() => handleClick()}
-        menuItems={menuItems}
-      />
+      <Stack spacing="sm">
+        <SplitButton
+          text={"I'm Feeling Lucky"}
+          fullWidth={true}
+          variant={'gradient'}
+          gradient={{ from: 'indigo', to: 'cyan' }}
+          leftIcon={<Dice5 />}
+          onClick={() => handleClick()}
+          menuItems={menuItems}
+        />
+        <HomeActions />
+      </Stack>
     </>
   );
 }
