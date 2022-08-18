@@ -5,7 +5,7 @@ import { useLocation } from 'umi';
 export function AppHeader() {
   const location = useLocation();
   const { classes } = useStyles();
-  console.log(location);
+
   return (
     <Header height={50} withBorder classNames={{ root: classes.root }}>
       <Group align="center" position="apart">
@@ -24,7 +24,7 @@ const useStyles = createStyles((theme) => ({
   root: {
     backgroundColor:
       theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-    margin: '0px -10px 15px -10px',
+    margin: '0px -8px 15px -8px',
     padding: '0px 15px',
     top: '0px',
   },
