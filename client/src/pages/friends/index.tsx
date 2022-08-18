@@ -26,15 +26,15 @@ export default function FriendsPage() {
 
       if (cookie && expiry) {
         setSpDcCookie(cookie);
+
+        const res = await axios.get('/friends', {
+          params: {
+            spDcCookie: cookie,
+          },
+        });
+
+        setFriends(res.data);
       }
-
-      const res = await axios.get('/friends', {
-        params: {
-          spDcCookie: cookie,
-        },
-      });
-
-      setFriends(res.data);
     };
 
     getFriends().catch((e) => console.log(e));

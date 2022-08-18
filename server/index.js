@@ -79,14 +79,18 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
         .catch((e) => console.log(e));
 
       const user = {
-        id: me.body.id,
+        userName: me.body.id,
         name: me.body.display_name,
         country: me.body.country,
         image: me.body.images.length ? me.body.images[0].url : '',
       };
 
       await usersCollection
-        .updateOne({ id: user.id }, { $set: { ...user } }, { upsert: true })
+        .updateOne(
+          { userName: user.userName },
+          { $set: { ...user } },
+          { upsert: true },
+        )
         .catch((e) => console.log(e));
 
       res.redirect(
