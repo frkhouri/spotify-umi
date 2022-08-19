@@ -1,14 +1,8 @@
 import { Playlist } from '@/dtos';
 import { Carousel } from '@mantine/carousel';
-import {
-  ActionIcon,
-  Card,
-  createStyles,
-  Group,
-  Image,
-  Text,
-} from '@mantine/core';
-import { DotsVertical, PlayerPlay } from 'tabler-icons-react';
+import { ActionIcon, Card, createStyles, Group, Text } from '@mantine/core';
+import { DotsVertical } from 'tabler-icons-react';
+import ItemCard from './ItemCard';
 
 export type HorizontalListProps = {
   heading?: string;
@@ -49,38 +43,7 @@ export const HorizontalList = ({
         {items?.length &&
           items.map((item) => (
             <Carousel.Slide className={classes.slide}>
-              <Card withBorder shadow="xs" radius="md">
-                <Card.Section withBorder>
-                  <Image src={item.image} height="235px" />
-                </Card.Section>
-                <Card.Section p="sm" className={classes.slideBody}>
-                  <Text weight={500} size="sm" lineClamp={1}>
-                    {item.name}
-                  </Text>
-                  <Text size="xs" lineClamp={2}>
-                    {item.description}
-                  </Text>
-                </Card.Section>
-                <Card.Section withBorder>
-                  <Group align="center" position="apart" p="sm">
-                    <Text weight={700} size="xs" color="dimmed">
-                      {item.owner.name}
-                    </Text>
-                    <ActionIcon
-                      variant="outline"
-                      size={30}
-                      color={actionIconColor}
-                    >
-                      <PlayerPlay
-                        fill={actionIconColor}
-                        height={20}
-                        radius="md"
-                        color={actionIconColor}
-                      />
-                    </ActionIcon>
-                  </Group>
-                </Card.Section>
-              </Card>
+              <ItemCard item={item} />
             </Carousel.Slide>
           ))}
       </Carousel>
@@ -104,28 +67,6 @@ const useStyles = createStyles((theme) => ({
   },
   slide: {
     minWidth: '235px',
-  },
-  image: {
-    borderStyle: 'dotted',
-    borderWidth: 'thin',
-    borderColor:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[2]
-        : theme.colors.gray[6],
-  },
-  slideBody: {
-    marginTop: '-2px',
-    height: '59px',
-  },
-  slideFooter: {
-    padding: '10px',
-  },
-  title: {
-    maxWidth: '70%',
-  },
-  details: {
-    height: '100%',
-    alignContent: 'space-evenly',
   },
 }));
 
