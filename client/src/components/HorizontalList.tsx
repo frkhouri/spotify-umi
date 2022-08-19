@@ -8,7 +8,7 @@ import {
   Image,
   Text,
 } from '@mantine/core';
-import { DotsVertical } from 'tabler-icons-react';
+import { DotsVertical, PlayerPlay } from 'tabler-icons-react';
 
 export type HorizontalListProps = {
   heading?: string;
@@ -21,23 +21,16 @@ export const HorizontalList = ({
   type,
   items,
 }: HorizontalListProps) => {
-  const { classes } = useStyles();
+  const { classes, theme } = useStyles();
+  const actionIconColor =
+    theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 5 : 6];
 
   return (
     <>
-      <Card
-        shadow="sm"
-        p="lg"
-        radius="md"
-        withBorder
-        className={classes.containerCard}
-      >
+      <Card p="lg" radius="md" withBorder>
         <Card.Section withBorder className={classes.containerHeader}>
           <Group position="apart">
-            {/* <Group>
-            <Avatar src={friend.user.image} radius="xl" size="md" /> */}
             <Text weight={500}>{heading}</Text>
-            {/* </Group> */}
             <ActionIcon variant="default">
               <DotsVertical height={16} />
             </ActionIcon>
@@ -47,7 +40,6 @@ export const HorizontalList = ({
       </Card>
       <Carousel
         slideSize="70%"
-        // height={200}
         slideGap="md"
         dragFree
         withControls={false}
@@ -56,13 +48,37 @@ export const HorizontalList = ({
       >
         {items?.length &&
           items.map((item) => (
-            <Carousel.Slide>
-              <Card withBorder style={{ margin: '0px -5px' }}>
-                <Card.Section>
-                  <Image src={item.image} />
+            <Carousel.Slide className={classes.slide}>
+              <Card withBorder shadow="xs" radius="md">
+                <Card.Section withBorder>
+                  <Image src={item.image} height="235px" />
                 </Card.Section>
-                <Card.Section>
-                  <Text>{item.name}</Text>
+                <Card.Section p="sm" className={classes.slideBody}>
+                  <Text weight={500} size="sm" lineClamp={1}>
+                    {item.name}
+                  </Text>
+                  <Text size="xs" lineClamp={2}>
+                    {item.description}
+                  </Text>
+                </Card.Section>
+                <Card.Section withBorder>
+                  <Group align="center" position="apart" p="sm">
+                    <Text weight={700} size="xs" color="dimmed">
+                      {item.owner.name}
+                    </Text>
+                    <ActionIcon
+                      variant="outline"
+                      size={30}
+                      color={actionIconColor}
+                    >
+                      <PlayerPlay
+                        fill={actionIconColor}
+                        height={20}
+                        radius="md"
+                        color={actionIconColor}
+                      />
+                    </ActionIcon>
+                  </Group>
                 </Card.Section>
               </Card>
             </Carousel.Slide>
@@ -74,20 +90,20 @@ export const HorizontalList = ({
 
 const useStyles = createStyles((theme) => ({
   carouselRoot: {
-    margin: '0px -8px -330px 0px',
-    padding: '0px 25px',
-    top: '-330px',
-  },
-  containerCard: {
-    margin: '10px 0px',
-    // overflow: 'visible',
+    margin: '0px -8px -330px -8px',
+    padding: '0px 23px',
+    top: '-405px',
+    height: '400px',
   },
   containerHeader: {
     padding: '10px 15px',
   },
   containerBody: {
     padding: '15px',
-    height: '300px',
+    height: '375px',
+  },
+  slide: {
+    minWidth: '235px',
   },
   image: {
     borderStyle: 'dotted',
@@ -96,6 +112,16 @@ const useStyles = createStyles((theme) => ({
       theme.colorScheme === 'dark'
         ? theme.colors.dark[2]
         : theme.colors.gray[6],
+  },
+  slideBody: {
+    marginTop: '-2px',
+    height: '59px',
+  },
+  slideFooter: {
+    padding: '10px',
+  },
+  title: {
+    maxWidth: '70%',
   },
   details: {
     height: '100%',
