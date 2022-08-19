@@ -1,6 +1,8 @@
 import { HomeActions, SplitButton } from '@/components';
+import HorizontalList from '@/components/HorizontalList';
 import { createStyles, Stack } from '@mantine/core';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 import {
   Armchair2,
   Bolt,
@@ -9,10 +11,9 @@ import {
   MoodHappy,
 } from 'tabler-icons-react';
 
-const useStyles = createStyles(() => ({}));
-
 export default function HomePage() {
   const { theme } = useStyles();
+  const [data, setData] = useState({});
   const minThreshold = 0.8;
   const maxThreshold = 0.2;
   const menuIconColor =
@@ -27,6 +28,16 @@ export default function HomePage() {
       },
     });
   };
+
+  useEffect(() => {
+    const getHomeData = async () => {
+      const res = await axios.get('/home');
+
+      setData(res.data);
+    };
+
+    getHomeData().catch((e) => console.log(e));
+  }, []);
 
   const menuItems = [
     {
@@ -64,7 +75,14 @@ export default function HomePage() {
           menuItems={menuItems}
         />
         <HomeActions />
+        <HorizontalList
+          heading="Playlists"
+          type="playlists"
+          items={data.playlists}
+        />
       </Stack>
     </>
   );
 }
+
+const useStyles = createStyles(() => ({}));

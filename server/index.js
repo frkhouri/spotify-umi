@@ -116,6 +116,29 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
       res.json(me.body);
     });
 
+    app.get('/api/home', async (req, res) => {
+      const data = await req.spotifyUser
+        .getUserPlaylists()
+        .catch((e) => console.log(e));
+      console.log(data);
+
+      const playlists = data.body.items.map((playlist) => {
+        const { id, name, description } = playlist;
+        return {
+          id,
+          name,
+          description,
+          image: playlist.images[0].url,
+          owner: {
+            id: playlist.owner.id,
+            name: playlist.owner.display_name,
+          },
+        };
+      });
+
+      res.json({ playlists });
+    });
+
     app.get('/api/im-feeling-lucky', async (req, res) => {
       const devices = await req.spotifyUser
         .getMyDevices()
