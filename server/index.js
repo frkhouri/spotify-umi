@@ -120,7 +120,6 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
       const data = await req.spotifyUser
         .getUserPlaylists()
         .catch((e) => console.log(e));
-      console.log(data);
 
       const playlists = data.body.items.map((playlist) => {
         const { id, name, description } = playlist;
