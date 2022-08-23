@@ -1,4 +1,3 @@
-import { setLocalStorage } from '@/utils';
 import { useEffect } from 'react';
 import { history, useLocation } from 'umi';
 
@@ -18,7 +17,13 @@ export default function CallbackPage() {
   const expiryDate = new Date();
   expiryDate.setSeconds(expiryDate.getSeconds() + Number(expiresIn));
 
-  setLocalStorage({ accessToken, refreshToken, expiryDate });
+  localStorage.setItem('access_token', accessToken);
+  localStorage.setItem('refresh_token', refreshToken);
+  localStorage.setItem(
+    'expiry_date',
+    `${expiryDate.toDateString()} ${expiryDate.toTimeString()}`,
+  );
+
   useEffect(() => {
     history.replace('/home');
   });

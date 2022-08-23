@@ -1,4 +1,3 @@
-import { setLocalStorage } from '@/utils';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { history, Outlet } from 'umi';
@@ -42,7 +41,11 @@ const getAccessToken = async () => {
     const expiryDate = new Date();
     expiryDate.setSeconds(expiryDate.getSeconds() + Number(expiresIn));
     if (accessToken && expiryDate) {
-      setLocalStorage({ accessToken, expiryDate });
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem(
+        'expiry_date',
+        `${expiryDate.toDateString()} ${expiryDate.toTimeString()}`,
+      );
     } else {
       history.replace('/login');
     }

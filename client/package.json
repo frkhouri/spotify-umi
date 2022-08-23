@@ -14,7 +14,6 @@
     "@mantine/carousel": "^5.1.6",
     "@mantine/core": "^5.1.6",
     "@mantine/form": "^5.1.6",
-    "@mantine/hooks": "^5.1.6",
     "@mantine/notifications": "^5.1.6",
     "@mantine/spotlight": "^5.1.6",
     "embla-carousel-react": "^7.0.0",

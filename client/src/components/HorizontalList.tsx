@@ -16,8 +16,6 @@ export const HorizontalList = ({
   items,
 }: HorizontalListProps) => {
   const { classes, theme } = useStyles();
-  const actionIconColor =
-    theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 5 : 6];
 
   return (
     <>
@@ -42,7 +40,7 @@ export const HorizontalList = ({
       >
         {items?.length &&
           items.map((item) => (
-            <Carousel.Slide className={classes.slide}>
+            <Carousel.Slide className={classes.slide} key={item.id}>
               <ItemCard item={item} />
             </Carousel.Slide>
           ))}
