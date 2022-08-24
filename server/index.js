@@ -26,7 +26,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
   res.header(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Access-Token, Refresh-Token, Expiry-Date',
+    'Origin, X-Requested-With, Content-Type, Accept, Access-Token, Refresh-Token, Expiry-Date, User-Id',
   );
 
   const spotifyUser = new Spotify({
@@ -85,16 +85,17 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
         image: me.body.images.length ? me.body.images[0].url : '',
       };
 
-      await usersCollection
-        .updateOne(
+      const userId = await usersCollection
+        .findOneAndUpdate(
           { userName: user.userName },
           { $set: { ...user } },
-          { upsert: true },
+          { upsert: true, new: true },
         )
+        .then((res) => res.value._id)
         .catch((e) => console.log(e));
 
       res.redirect(
-        `${process.env.DOMAIN}/callback?access_token=${access_token}&refresh_token=${refresh_token}&expires_in=${expires_in}`,
+        `${process.env.DOMAIN}/callback?access_token=${access_token}&refresh_token=${refresh_token}&expires_in=${expires_in}&user=${userId}`,
       );
     });
 

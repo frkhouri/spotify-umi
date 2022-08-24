@@ -6,9 +6,11 @@ import { history, Outlet } from 'umi';
 axios.defaults.baseURL = 'https://spotify-4-app.herokuapp.com/api';
 axios.interceptors.request.use(async (config) => {
   const accessToken = await getAccessToken();
+  const userId = localStorage.getItem('user_id');
 
-  if (config.headers && accessToken) {
+  if (config.headers && accessToken && userId) {
     config.headers['Access-Token'] = accessToken;
+    config.headers['User-Id'] = userId;
   }
 
   return config;
