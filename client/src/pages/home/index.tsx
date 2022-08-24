@@ -75,11 +75,14 @@ export default function HomePage() {
           menuItems={menuItems}
         />
         <HomeActions />
-        <HorizontalList
-          heading="Playlists"
-          type="playlists"
-          items={data.playlists}
-        />
+        {data.lists &&
+          data.lists.map((list) => (
+            <HorizontalList
+              heading={list.name}
+              type="playlists"
+              items={list.items}
+            />
+          ))}
       </Stack>
     </>
   );

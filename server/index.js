@@ -54,6 +54,7 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
 
     const db = client.db(process.env.DATABASE);
     const usersCollection = db.collection('users');
+    const listsCollection = db.collection('lists');
 
     app.get('/api/login', (_req, res) => {
       const state = generateRandomString(16);
@@ -118,25 +119,34 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
     });
 
     app.get('/api/home', async (req, res) => {
-      const data = await req.spotifyUser
-        .getUserPlaylists()
-        .catch((e) => console.log(e));
+      // const data = await req.spotifyUser
+      //   .getUserPlaylists()
+      //   .catch((e) => console.log(e));
 
-      const playlists = data.body.items.map((playlist) => {
-        const { id, name, description } = playlist;
-        return {
-          id,
-          name,
-          description,
-          image: playlist.images[0].url,
-          owner: {
-            id: playlist.owner.id,
-            name: playlist.owner.display_name,
-          },
-        };
-      });
+      const lists = await listsCollection
+        .find({
+          userId: mongodb.ObjectId(req.header('user-id')),
+        })
+        .project({ userId: 0 })
+        .toArray();
+      // .then((res) => console.log(res))
+      // .catch((e) => console.log(e));
 
-      res.json({ playlists });
+      // const playlists = data.body.items.map((playlist) => {
+      //   const { id, name, description } = playlist;
+      //   return {
+      //     id,
+      //     name,
+      //     description,
+      //     image: playlist.images[0].url,
+      //     owner: {
+      //       id: playlist.owner.id,
+      //       name: playlist.owner.display_name,
+      //     },
+      //   };
+      // });
+
+      res.json({ lists });
     });
 
     app.get('/api/im-feeling-lucky', async (req, res) => {
