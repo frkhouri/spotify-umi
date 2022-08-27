@@ -1,6 +1,9 @@
+import { UseListStateHandlers } from '@mantine/hooks';
+import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
+
 export type HorizontalListProps = {
-  heading: string;
-  items: ListItem[];
+  list: List;
+  setItems: (updatedList: List) => void;
 };
 
 export type List = {
@@ -18,5 +21,25 @@ export type ListItem = {
   owner: {
     id: string;
     name: string;
+  };
+};
+
+export type EditListModalProps = {
+  opened: boolean;
+  onClose: () => void;
+  onSubmit: (updatedList: List) => void;
+  list: List;
+};
+
+export type ListDragAndDropProps = {
+  state: ListItem[];
+  handlers: UseListStateHandlers<ListItem>;
+};
+
+export type DragAndDropListItem = {
+  props: {
+    item: ListItem;
+    provided: DraggableProvided;
+    snapshot: DraggableStateSnapshot;
   };
 };

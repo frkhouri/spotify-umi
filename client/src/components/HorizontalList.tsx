@@ -1,4 +1,4 @@
-import { HorizontalListProps } from '@/dtos';
+import { HorizontalListProps, List } from '@/dtos';
 import { Carousel } from '@mantine/carousel';
 import {
   ActionIcon,
@@ -13,7 +13,7 @@ import { DotsVertical, Edit, EyeOff } from 'tabler-icons-react';
 import EditListModal from './EditListModal';
 import ItemCard from './ItemCard';
 
-export const HorizontalList = ({ heading, items }: HorizontalListProps) => {
+export const HorizontalList = ({ list, setItems }: HorizontalListProps) => {
   const { classes, theme } = useStyles();
   const [editModalOpen, setEditModalOpen] = useState(false);
 
@@ -34,17 +34,22 @@ export const HorizontalList = ({ heading, items }: HorizontalListProps) => {
     setEditModalOpen(false);
   };
 
+  const onEditModalSubmit = (updatedList: List) => {
+    setItems(updatedList);
+    setEditModalOpen(false);
+  };
+
   return (
     <>
       <Card p="lg" radius="md" withBorder>
         <Card.Section withBorder className={classes.containerHeader}>
           <Group position="apart">
-            <Text weight={500}>{heading}</Text>
+            <Text weight={500}>{list.name}</Text>
             <EditListModal
               opened={editModalOpen}
               onClose={onEditModalClose}
-              title={heading}
-              data={items}
+              onSubmit={onEditModalSubmit}
+              list={list}
             />
             <Menu transition="pop" position="bottom-end">
               <Menu.Target>
@@ -72,8 +77,8 @@ export const HorizontalList = ({ heading, items }: HorizontalListProps) => {
         align="start"
         classNames={{ root: classes.carouselRoot }}
       >
-        {items?.length &&
-          items.map((item) => (
+        {list?.items?.length &&
+          list.items.map((item) => (
             <Carousel.Slide className={classes.slide} key={item.id}>
               <ItemCard item={item} />
             </Carousel.Slide>

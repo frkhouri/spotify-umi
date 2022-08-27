@@ -1,27 +1,22 @@
-import { ListItem } from '@/dtos';
+import { EditListModalProps } from '@/dtos';
 import { Button, createStyles, Group, Modal, TextInput } from '@mantine/core';
+import { useListState } from '@mantine/hooks';
 import ListDragAndDrop from './ListDragAndDrop';
-
-type EditListModalProps = {
-  opened: boolean;
-  onClose: () => void;
-  title: string;
-  data: ListItem[];
-};
 
 const EditListModal = ({
   opened,
+  onSubmit,
   onClose,
-  title,
-  data,
+  list,
 }: EditListModalProps) => {
   const { classes, theme } = useStyles();
+  const [state, handlers] = useListState(list.items);
 
   return (
     <Modal
       opened={opened}
       onClose={onClose}
-      title={<TextInput placeholder="Title" defaultValue={title} />}
+      title={<TextInput placeholder="Title" defaultValue={list.name} />}
       centered
       overflow="inside"
       overlayColor={
@@ -33,11 +28,17 @@ const EditListModal = ({
       overlayBlur={3}
     >
       <div className={classes.listWrapper}>
-        <ListDragAndDrop data={data} />
+        <ListDragAndDrop state={state} handlers={handlers} />
       </div>
       <Group position="right">
         <Button variant="outline">Cancel</Button>
-        <Button>Save</Button>
+        <Button
+          onClick={() =>
+            onSubmit({ _id: list._id, name: list.name, items: state })
+          }
+        >
+          Save
+        </Button>
       </Group>
     </Modal>
   );

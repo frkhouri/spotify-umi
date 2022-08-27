@@ -1,6 +1,5 @@
 import { DragAndDropListItem, ListDragAndDropProps } from '@/dtos';
 import { createStyles, Text } from '@mantine/core';
-import { useListState } from '@mantine/hooks';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { GripVertical } from 'tabler-icons-react';
 
@@ -31,9 +30,7 @@ const ListItem = ({ props }: DragAndDropListItem) => {
   );
 };
 
-const ListDragAndDrop = ({ data }: ListDragAndDropProps) => {
-  const [state, handlers] = useListState(data);
-
+const ListDragAndDrop = ({ state, handlers }: ListDragAndDropProps) => {
   return (
     <DragDropContext
       onDragEnd={({ destination, source }) =>

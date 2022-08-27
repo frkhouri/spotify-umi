@@ -30,6 +30,15 @@ export default function HomePage() {
     });
   };
 
+  const setItems = (updatedList: List) => {
+    const newData = { ...data };
+    const listIndex = newData.lists.findIndex(
+      (list) => list._id === updatedList._id,
+    );
+    newData.lists[listIndex] = updatedList;
+    setData(newData);
+  };
+
   useEffect(() => {
     const getHomeData = async () => {
       const res = await axios.get('/home');
@@ -78,11 +87,7 @@ export default function HomePage() {
         <HomeActions />
         {data.lists &&
           data.lists.map((list) => (
-            <HorizontalList
-              heading={list.name}
-              items={list.items}
-              key={list._id}
-            />
+            <HorizontalList list={list} setItems={setItems} key={list._id} />
           ))}
       </Stack>
     </>
