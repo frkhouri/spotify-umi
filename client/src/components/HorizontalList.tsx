@@ -1,21 +1,38 @@
-import { Playlist } from '@/dtos';
+import { HorizontalListProps } from '@/dtos';
 import { Carousel } from '@mantine/carousel';
-import { ActionIcon, Card, createStyles, Group, Text } from '@mantine/core';
-import { DotsVertical } from 'tabler-icons-react';
+import {
+  ActionIcon,
+  Card,
+  createStyles,
+  Group,
+  Menu,
+  Text,
+} from '@mantine/core';
+import { useState } from 'react';
+import { DotsVertical, Edit, EyeOff } from 'tabler-icons-react';
+import EditListModal from './EditListModal';
 import ItemCard from './ItemCard';
 
-export type HorizontalListProps = {
-  heading?: string;
-  type: 'tracks' | 'shows' | 'playlists';
-  items: Playlist[];
-};
-
-export const HorizontalList = ({
-  heading,
-  type,
-  items,
-}: HorizontalListProps) => {
+export const HorizontalList = ({ heading, items }: HorizontalListProps) => {
   const { classes, theme } = useStyles();
+  const [editModalOpen, setEditModalOpen] = useState(false);
+
+  const menuItems = [
+    {
+      text: 'Edit',
+      icon: <Edit />,
+      onClick: () => setEditModalOpen(true),
+    },
+    {
+      text: 'Hide',
+      icon: <EyeOff />,
+      // onClick: () => handleClick('max_energy', maxThreshold),
+    },
+  ];
+
+  const onEditModalClose = () => {
+    setEditModalOpen(false);
+  };
 
   return (
     <>
@@ -23,9 +40,26 @@ export const HorizontalList = ({
         <Card.Section withBorder className={classes.containerHeader}>
           <Group position="apart">
             <Text weight={500}>{heading}</Text>
-            <ActionIcon variant="default">
-              <DotsVertical height={16} />
-            </ActionIcon>
+            <EditListModal
+              opened={editModalOpen}
+              onClose={onEditModalClose}
+              title={heading}
+              data={items}
+            />
+            <Menu transition="pop" position="bottom-end">
+              <Menu.Target>
+                <ActionIcon variant="default">
+                  <DotsVertical height={16} />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                {menuItems.map((item, i) => (
+                  <Menu.Item icon={item.icon} onClick={item.onClick} key={i}>
+                    {item.text}
+                  </Menu.Item>
+                ))}
+              </Menu.Dropdown>
+            </Menu>
           </Group>
         </Card.Section>
         <Card.Section className={classes.containerBody}></Card.Section>

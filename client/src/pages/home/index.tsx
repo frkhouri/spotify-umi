@@ -1,5 +1,6 @@
 import { HomeActions, SplitButton } from '@/components';
 import HorizontalList from '@/components/HorizontalList';
+import { List } from '@/dtos';
 import { createStyles, Stack } from '@mantine/core';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -13,7 +14,7 @@ import {
 
 export default function HomePage() {
   const { theme } = useStyles();
-  const [data, setData] = useState({});
+  const [data, setData] = useState<{ lists: List[] }>({ lists: [] });
   const minThreshold = 0.8;
   const maxThreshold = 0.2;
   const menuIconColor =
@@ -79,8 +80,8 @@ export default function HomePage() {
           data.lists.map((list) => (
             <HorizontalList
               heading={list.name}
-              type="playlists"
               items={list.items}
+              key={list._id}
             />
           ))}
       </Stack>

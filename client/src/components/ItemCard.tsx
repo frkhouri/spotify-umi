@@ -1,4 +1,4 @@
-import { Playlist } from '@/dtos';
+import { ListItem } from '@/dtos';
 import {
   ActionIcon,
   Card,
@@ -9,7 +9,7 @@ import {
 } from '@mantine/core';
 import { PlayerPlay } from 'tabler-icons-react';
 
-export const HorizontalList = ({ item }: { item: Playlist }) => {
+export const ItemCard = ({ item }: { item: ListItem }) => {
   const { classes, theme } = useStyles();
   const actionIconColor =
     theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 5 : 6];
@@ -53,4 +53,4 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-export default HorizontalList;
+export default ItemCard;
