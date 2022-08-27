@@ -1,44 +1,38 @@
+import { DragAndDropListItem, ListDragAndDropProps } from '@/dtos';
 import { createStyles, Text } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { GripVertical } from 'tabler-icons-react';
 
-interface DndListHandleProps {
-  data: {
-    id: string;
-    name: string;
-  }[];
-}
-
-const ListDragAndDrop = ({ data }: DndListHandleProps) => {
+const ListItem = ({ props }: DragAndDropListItem) => {
   const { classes, cx } = useStyles();
-  const [state, handlers] = useListState(data);
+  const { item, provided, snapshot } = props;
 
-  const items = state.map((item, index) => (
-    <Draggable key={item.id} index={index} draggableId={item.id}>
-      {(provided, snapshot, rubric) => (
-        <div
-          className={cx(classes.item, {
-            [classes.itemDragging]: snapshot.isDragging,
-          })}
-          ref={provided.innerRef}
-          key={data[rubric.source.index].id}
-          {...provided.draggableProps}
-        >
-          <div {...provided.dragHandleProps} className={classes.dragHandle}>
-            <GripVertical size={18} />
-          </div>
-          {/* <Text className={classes.symbol}>{item.symbol}</Text> */}
-          <div>
-            <Text>{item.name}</Text>
-            {/* <Text color="dimmed" size="sm">
+  return (
+    <div
+      className={cx(classes.item, {
+        [classes.itemDragging]: snapshot.isDragging,
+      })}
+      ref={provided.innerRef}
+      key={item.id}
+      {...provided.draggableProps}
+    >
+      <div {...provided.dragHandleProps} className={classes.dragHandle}>
+        <GripVertical size={18} />
+      </div>
+      {/* <Text className={classes.symbol}>{item.symbol}</Text> */}
+      <div>
+        <Text>{item.name}</Text>
+        {/* <Text color="dimmed" size="sm">
               Position: {item.position} • Mass: {item.mass}
             </Text> */}
-          </div>
-        </div>
-      )}
-    </Draggable>
-  ));
+      </div>
+    </div>
+  );
+};
+
+const ListDragAndDrop = ({ data }: ListDragAndDropProps) => {
+  const [state, handlers] = useListState(data);
 
   return (
     <DragDropContext
@@ -50,30 +44,20 @@ const ListDragAndDrop = ({ data }: DndListHandleProps) => {
         droppableId="dnd-list"
         direction="vertical"
         renderClone={(provided, snapshot, rubric) => (
-          <div
-            className={cx(classes.item, {
-              [classes.itemDragging]: snapshot.isDragging,
-            })}
-            ref={provided.innerRef}
-            key={state[rubric.source.index].id}
-            {...provided.draggableProps}
-          >
-            <div {...provided.dragHandleProps} className={classes.dragHandle}>
-              <GripVertical size={18} />
-            </div>
-            {/* <Text className={classes.symbol}>{item.symbol}</Text> */}
-            <div>
-              <Text>{state[rubric.source.index].name}</Text>
-              {/* <Text color="dimmed" size="sm">
-                Position: {item.position} • Mass: {item.mass}
-              </Text> */}
-            </div>
-          </div>
+          <ListItem
+            props={{ item: state[rubric.source.index], provided, snapshot }}
+          />
         )}
       >
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
-            {items}
+            {state.map((item, index) => (
+              <Draggable key={item.id} index={index} draggableId={item.id}>
+                {(provided, snapshot) => (
+                  <ListItem props={{ item, provided, snapshot }} />
+                )}
+              </Draggable>
+            ))}
             {provided.placeholder}
           </div>
         )}
