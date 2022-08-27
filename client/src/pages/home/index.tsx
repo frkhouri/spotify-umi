@@ -36,6 +36,11 @@ export default function HomePage() {
       (list) => list._id === updatedList._id,
     );
     newData.lists[listIndex] = updatedList;
+
+    axios.patch(`/lists/${updatedList._id}`, {
+      name: updatedList.name,
+      items: updatedList.items,
+    });
     setData(newData);
   };
 

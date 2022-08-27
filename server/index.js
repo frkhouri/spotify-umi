@@ -28,6 +28,7 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Access-Token, Refresh-Token, Expiry-Date, User-Id',
   );
+  res.header('Access-Control-Allow-Methods', 'PATCH');
 
   const spotifyUser = new Spotify({
     clientId: process.env.CLIENT_ID,
@@ -43,6 +44,7 @@ app.use((req, res, next) => {
   req.spotifyUser = spotifyUser;
   next();
 });
+app.use(express.json());
 app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
 const generateRandomString = (N) =>
@@ -119,32 +121,12 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
     });
 
     app.get('/api/home', async (req, res) => {
-      // const data = await req.spotifyUser
-      //   .getUserPlaylists()
-      //   .catch((e) => console.log(e));
-
       const lists = await listsCollection
         .find({
           userId: mongodb.ObjectId(req.header('user-id')),
         })
         .project({ userId: 0 })
         .toArray();
-      // .then((res) => console.log(res))
-      // .catch((e) => console.log(e));
-
-      // const playlists = data.body.items.map((playlist) => {
-      //   const { id, name, description } = playlist;
-      //   return {
-      //     id,
-      //     name,
-      //     description,
-      //     image: playlist.images[0].url,
-      //     owner: {
-      //       id: playlist.owner.id,
-      //       name: playlist.owner.display_name,
-      //     },
-      //   };
-      // });
 
       res.json({ lists });
     });
@@ -193,6 +175,22 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
       await req.spotifyUser.play({ uris: recommendedTrackUris });
 
       res.send();
+    });
+
+    app.patch('/api/lists/:listId', async (req, res) => {
+      const updatedList = await listsCollection
+        .findOneAndUpdate(
+          {
+            _id: mongodb.ObjectId(req.params.listId),
+          },
+          {
+            $set: { ...req.body },
+          },
+        )
+        .then((res) => res.value)
+        .catch((e) => console.log(e));
+
+      res.json(updatedList);
     });
 
     app.get('/api/search', async (req, res) => {
