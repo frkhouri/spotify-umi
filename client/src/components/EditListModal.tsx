@@ -2,6 +2,7 @@ import { EditListModalProps } from '@/dtos';
 import { Button, createStyles, Group, Modal, TextInput } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { useState } from 'react';
+import { AddListItem } from './AddListItem';
 import ListDragAndDrop from './ListDragAndDrop';
 
 const EditListModal = ({
@@ -14,10 +15,15 @@ const EditListModal = ({
   const [state, handlers] = useListState(list.items);
   const [name, setName] = useState(list.name);
 
+  const onCancel = () => {
+    onClose();
+    handlers.setState(list.items);
+  };
+
   return (
     <Modal
       opened={opened}
-      onClose={onClose}
+      onClose={onCancel}
       title={
         <TextInput
           placeholder="Title"
@@ -37,9 +43,12 @@ const EditListModal = ({
     >
       <div className={classes.listWrapper}>
         <ListDragAndDrop state={state} handlers={handlers} />
+        <AddListItem />
       </div>
       <Group position="right">
-        <Button variant="outline">Cancel</Button>
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
         <Button
           onClick={() => onSubmit({ _id: list._id, name: name, items: state })}
         >

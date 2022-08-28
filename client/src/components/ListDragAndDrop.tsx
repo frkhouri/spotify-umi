@@ -34,7 +34,10 @@ const ListDragAndDrop = ({ state, handlers }: ListDragAndDropProps) => {
   return (
     <DragDropContext
       onDragEnd={({ destination, source }) =>
-        handlers.reorder({ from: source.index, to: destination?.index || 0 })
+        handlers.reorder({
+          from: source.index,
+          to: destination?.index ?? source.index,
+        })
       }
     >
       <Droppable
