@@ -19,7 +19,7 @@ export default defineConfig({
       wrappers: [
         '@/wrappers/auth',
         '@/wrappers/notifications',
-        '@/wrappers/spotlight',
+        '@/wrappers/provider',
       ],
       routes: [
         {

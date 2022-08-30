@@ -55,7 +55,7 @@ const useStyles = createStyles((theme) => ({
   carouselRoot: {
     margin: '0px -8px -330px -8px',
     padding: '0px 23px',
-    top: '-405px',
+    top: '-375px',
     height: '400px',
   },
   containerHeader: {

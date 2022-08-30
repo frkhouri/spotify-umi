@@ -5,5 +5,6 @@ export * from './FriendTokenInput';
 export * from './HomeActions';
 export * from './ItemCard';
 export * from './Navbar';
+export * from './SearchBar';
 export * from './SearchButton';
 export * from './SplitButton';

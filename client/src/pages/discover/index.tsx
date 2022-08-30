@@ -1,4 +1,4 @@
-import { SearchButton } from '@/components';
+import { SearchBar } from '@/components';
 import { createStyles } from '@mantine/core';
 import axios from 'axios';
 
@@ -19,7 +19,7 @@ export default function DiscoverPage() {
 
   return (
     <>
-      <SearchButton />
+      <SearchBar />
     </>
   );
 }
