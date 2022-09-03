@@ -1,25 +1,19 @@
-import { SearchButton } from '@/components';
-import { createStyles } from '@mantine/core';
-import axios from 'axios';
+import { SearchBar } from '@/components';
+import { AutocompleteItem, createStyles } from '@mantine/core';
+import { history } from 'umi';
 
 const useStyles = createStyles(() => ({}));
 
 export default function DiscoverPage() {
   const { theme } = useStyles();
 
-  const handleClick = async (attribute?: string, threshold?: number) => {
-    await axios.get('/im-feeling-lucky', {
-      params: {
-        ...(attribute && {
-          [attribute]: threshold,
-        }),
-      },
-    });
+  const onSearchResultSelect = (item: AutocompleteItem) => {
+    history.push(`${item.type}/${item.id}`);
   };
 
   return (
     <>
-      <SearchButton />
+      <SearchBar onItemSelect={onSearchResultSelect} />
     </>
   );
 }
