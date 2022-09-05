@@ -30,7 +30,7 @@ export const ItemCard = ({ item }: { item: ListItem }) => {
       <Card.Section withBorder>
         <Group align="center" position="apart" p="sm">
           <Text weight={700} size="xs" color="dimmed">
-            {item.owner.name}
+            {item.owner?.name}
           </Text>
           <ActionIcon variant="outline" size={30} color={actionIconColor}>
             <PlayerPlay

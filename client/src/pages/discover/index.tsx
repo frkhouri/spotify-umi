@@ -1,5 +1,6 @@
 import { SearchBar } from '@/components';
-import { AutocompleteItem, createStyles } from '@mantine/core';
+import { ListItem } from '@/dtos';
+import { createStyles } from '@mantine/core';
 import { history } from 'umi';
 
 const useStyles = createStyles(() => ({}));
@@ -7,7 +8,7 @@ const useStyles = createStyles(() => ({}));
 export default function DiscoverPage() {
   const { theme } = useStyles();
 
-  const onSearchResultSelect = (item: AutocompleteItem) => {
+  const onSearchResultSelect = (item: ListItem) => {
     history.push(`${item.type}/${item.id}`);
   };
 

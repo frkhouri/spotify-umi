@@ -1,13 +1,15 @@
 import { createStyles, Text } from '@mantine/core';
 import { Plus } from 'tabler-icons-react';
-import { useSpotlight } from '@mantine/spotlight';
 
-export const AddListItem = () => {
-  const spotlight = useSpotlight();
+type AddListItemProps = {
+  onClick: () => void;
+};
+
+export const AddListItem = ({ onClick }: AddListItemProps) => {
   const { classes } = useStyles();
 
   return (
-    <div className={classes.item} onClick={spotlight.openSpotlight}>
+    <div className={classes.item} onClick={onClick}>
       <div className={classes.leftIcon}>
         <Plus size={18} />
       </div>

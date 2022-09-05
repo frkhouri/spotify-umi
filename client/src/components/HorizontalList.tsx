@@ -34,9 +34,8 @@ export const HorizontalList = ({ list, setItems }: HorizontalListProps) => {
     setEditModalOpen(false);
   };
 
-  const onEditModalSubmit = (updatedList: List) => {
-    setItems(updatedList);
-    setEditModalOpen(false);
+  const onEditModalSubmit = async (updatedList: List) => {
+    await setItems(updatedList).then(() => setEditModalOpen(false));
   };
 
   return (

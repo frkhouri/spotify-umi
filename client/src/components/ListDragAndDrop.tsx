@@ -31,6 +31,7 @@ const ListItem = ({ props }: DragAndDropListItem) => {
 };
 
 const ListDragAndDrop = ({ state, handlers }: ListDragAndDropProps) => {
+  const { classes } = useStyles();
   return (
     <DragDropContext
       onDragEnd={({ destination, source }) =>
@@ -50,7 +51,11 @@ const ListDragAndDrop = ({ state, handlers }: ListDragAndDropProps) => {
         )}
       >
         {(provided) => (
-          <div {...provided.droppableProps} ref={provided.innerRef}>
+          <div
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            className={classes.listWrapper}
+          >
             {state.map((item, index) => (
               <Draggable key={item.id} index={index} draggableId={item.id}>
                 {(provided, snapshot) => (
@@ -67,6 +72,15 @@ const ListDragAndDrop = ({ state, handlers }: ListDragAndDropProps) => {
 };
 
 const useStyles = createStyles((theme) => ({
+  listWrapper: {
+    height: '250px',
+    overflow: 'auto',
+    scrollbarWidth: 'none',
+    '::-webkit-scrollbar': {
+      display: 'none',
+    },
+  },
+
   item: {
     display: 'flex',
     alignItems: 'center',

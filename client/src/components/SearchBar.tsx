@@ -1,7 +1,6 @@
-import { SearchResult } from '@/dtos';
+import { ListItem, SearchResult } from '@/dtos';
 import {
   Autocomplete,
-  AutocompleteItem,
   Avatar,
   Card,
   Chip,
@@ -15,8 +14,8 @@ import axios from 'axios';
 import { forwardRef, useEffect, useState } from 'react';
 import { Search } from 'tabler-icons-react';
 
-const SearchResultItem = forwardRef<HTMLDivElement, SearchResult>(
-  ({ name, image, ...others }: SearchResult, ref) => (
+const SearchResultItem = forwardRef<HTMLDivElement, ListItem>(
+  ({ name, image, ...others }: ListItem, ref) => (
     <div ref={ref} style={{ width: '95%', margin: '-6px' }} {...others}>
       <Group noWrap>
         <Avatar src={image} />
@@ -56,13 +55,26 @@ const chips = [
 ];
 
 type SearchBarProps = {
-  onItemSelect: (item: AutocompleteItem) => void;
+  showFilter?: boolean;
+  onItemSelect: (item: ListItem) => void;
+  style?: React.CSSProperties;
 };
 
-export const SearchBar = ({ onItemSelect }: SearchBarProps) => {
+export const SearchBar = ({
+  showFilter = true,
+  onItemSelect,
+  style,
+}: SearchBarProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
-  const [types, setTypes] = useState(['album', 'artist', 'playlist']);
+  const [types, setTypes] = useState([
+    'album',
+    'artist',
+    'playlist',
+    'track',
+    'show',
+    'episode',
+  ]);
   const [filterVisible, setFilterVisible] = useState(false);
   const { classes } = useStyles();
 
@@ -84,10 +96,11 @@ export const SearchBar = ({ onItemSelect }: SearchBarProps) => {
 
       results &&
         setData(
-          results?.map((result: SearchResult) => ({
+          results?.map((result: ListItem) => ({
             ...result,
             value: result.name,
             group: `${result.type}s`.toUpperCase(),
+            key: results.id,
           })),
         );
     }, 750);
@@ -112,11 +125,12 @@ export const SearchBar = ({ onItemSelect }: SearchBarProps) => {
           maxDropdownHeight="400px"
           onDropdownOpen={() => setFilterVisible(true)}
           onDropdownClose={() => setFilterVisible(false)}
-          onItemSubmit={(item) => onItemSelect(item)}
+          onItemSubmit={(item) => onItemSelect(item as unknown as ListItem)}
+          style={style}
           classNames={{ dropdown: classes.dropdown }}
         />
-        {filterVisible && (
-          <Card shadow="md" p="xs" className={classes.typeFilter}>
+        {showFilter && filterVisible && (
+          <Card shadow="xs" p="xs" className={classes.typeFilter}>
             <Chip.Group
               multiple
               value={types}

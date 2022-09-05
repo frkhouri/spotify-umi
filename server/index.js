@@ -203,15 +203,32 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
       const data = [];
       Object.values(results.body).map((type) => {
         type.items.map((item) => {
+          const owner = {
+            id: '',
+            name: '',
+          };
+
+          if (item.type === 'album' || item.type === 'track') {
+            owner.id = item.artists[0].id;
+            owner.name = item.artists[0].name;
+          } else if (item.type === 'playlist') {
+            owner.id = item.owner.id;
+            owner.name = item.owner.display_name;
+          }
+
           data.push({
             id: item.id,
             name: item.name,
+            description: item.description,
             image: item.images?.length
-              ? item.images[item.images.length - 1].url
+              ? item.images[0].url
               : item.album?.images
               ? item.album.images[item.album.images.length - 1].url
               : '',
             type: item.type,
+            ...(owner.id && {
+              owner,
+            }),
           });
           return;
         });

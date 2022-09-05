@@ -30,17 +30,19 @@ export default function HomePage() {
     });
   };
 
-  const setItems = (updatedList: List) => {
+  const setItems = async (updatedList: List) => {
     const newData = { ...data };
     const listIndex = newData.lists.findIndex(
       (list) => list._id === updatedList._id,
     );
     newData.lists[listIndex] = updatedList;
 
-    axios.patch(`/lists/${updatedList._id}`, {
-      name: updatedList.name,
-      items: updatedList.items,
-    });
+    await axios
+      .patch(`/lists/${updatedList._id}`, {
+        name: updatedList.name,
+        items: updatedList.items,
+      })
+      .then((res) => console.log(res));
     setData(newData);
   };
 

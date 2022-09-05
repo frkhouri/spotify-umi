@@ -3,7 +3,7 @@ import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
 
 export type HorizontalListProps = {
   list: List;
-  setItems: (updatedList: List) => void;
+  setItems: (updatedList: List) => Promise<void>;
 };
 
 export type List = {
@@ -18,7 +18,7 @@ export type ListItem = {
   description?: string;
   image?: string;
   type: 'playlist' | 'album' | 'show' | 'artist';
-  owner: {
+  owner?: {
     id: string;
     name: string;
   };
