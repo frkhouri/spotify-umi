@@ -1,11 +1,11 @@
 import { DragAndDropListItem, ListDragAndDropProps } from '@/dtos';
-import { createStyles, Text } from '@mantine/core';
+import { ActionIcon, createStyles, Text } from '@mantine/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { GripVertical } from 'tabler-icons-react';
+import { GripVertical, Trash } from 'tabler-icons-react';
 
 const ListItem = ({ props }: DragAndDropListItem) => {
   const { classes, cx } = useStyles();
-  const { item, provided, snapshot } = props;
+  const { item, provided, snapshot, handlers } = props;
 
   return (
     <div
@@ -19,13 +19,15 @@ const ListItem = ({ props }: DragAndDropListItem) => {
       <div {...provided.dragHandleProps} className={classes.dragHandle}>
         <GripVertical size={18} />
       </div>
-      {/* <Text className={classes.symbol}>{item.symbol}</Text> */}
       <div>
         <Text>{item.name}</Text>
-        {/* <Text color="dimmed" size="sm">
-              Position: {item.position} • Mass: {item.mass}
-            </Text> */}
       </div>
+      <ActionIcon
+        onClick={() => handlers.filter((listItem) => listItem.id !== item.id)}
+        className={classes.deleteButton}
+      >
+        <Trash size={18} />
+      </ActionIcon>
     </div>
   );
 };
@@ -46,7 +48,12 @@ const ListDragAndDrop = ({ state, handlers }: ListDragAndDropProps) => {
         direction="vertical"
         renderClone={(provided, snapshot, rubric) => (
           <ListItem
-            props={{ item: state[rubric.source.index], provided, snapshot }}
+            props={{
+              item: state[rubric.source.index],
+              provided,
+              snapshot,
+              handlers,
+            }}
           />
         )}
       >
@@ -59,7 +66,7 @@ const ListDragAndDrop = ({ state, handlers }: ListDragAndDropProps) => {
             {state.map((item, index) => (
               <Draggable key={item.id} index={index} draggableId={item.id}>
                 {(provided, snapshot) => (
-                  <ListItem props={{ item, provided, snapshot }} />
+                  <ListItem props={{ item, provided, snapshot, handlers }} />
                 )}
               </Draggable>
             ))}
@@ -100,12 +107,6 @@ const useStyles = createStyles((theme) => ({
     position: 'static',
   },
 
-  symbol: {
-    fontSize: 30,
-    fontWeight: 700,
-    width: 60,
-  },
-
   dragHandle: {
     ...theme.fn.focusStyles(),
     display: 'flex',
@@ -118,6 +119,13 @@ const useStyles = createStyles((theme) => ({
         : theme.colors.gray[6],
     paddingLeft: theme.spacing.md,
     paddingRight: theme.spacing.md,
+  },
+
+  deleteButton: {
+    marginLeft: 'auto',
+    color: theme.colors.red[9],
+    height: '24px',
+    minHeight: '24px',
   },
 }));
 

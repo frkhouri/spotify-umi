@@ -41,5 +41,6 @@ export type DragAndDropListItem = {
     item: ListItem;
     provided: DraggableProvided;
     snapshot: DraggableStateSnapshot;
+    handlers: UseListStateHandlers<ListItem>;
   };
 };
