@@ -49,7 +49,7 @@ export const ItemCard = ({ item }: { item: ListItem }) => {
 const useStyles = createStyles(() => ({
   body: {
     marginTop: '-2px',
-    height: '59px',
+    height: '80px',
   },
 }));
 

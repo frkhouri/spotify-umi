@@ -91,7 +91,7 @@ const useStyles = createStyles((theme) => ({
   carouselRoot: {
     margin: '0px -8px -330px -8px',
     padding: '0px 23px',
-    top: '-375px',
+    top: '-405px',
     height: '400px',
   },
   containerHeader: {
@@ -99,7 +99,7 @@ const useStyles = createStyles((theme) => ({
   },
   containerBody: {
     padding: '15px',
-    height: '375px',
+    height: '405px',
   },
   slide: {
     minWidth: '235px',
