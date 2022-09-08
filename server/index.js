@@ -121,12 +121,43 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
     });
 
     app.get('/api/home', async (req, res) => {
-      const lists = await listsCollection
+      const retrievedLists = await listsCollection
         .find({
           userId: mongodb.ObjectId(req.header('user-id')),
         })
         .project({ userId: 0 })
         .toArray();
+
+      const lists = await Promise.all(
+        retrievedLists.map(async (list) => {
+          const mappedListItems = await Promise.all(
+            list.items.map(async (item) => {
+              if (item.type === 'show') {
+                const latestEpisode = await req.spotifyUser
+                  .getShowEpisodes(item.id, { limit: 1 })
+                  .catch((e) => console.log(e));
+
+                item.owner = {
+                  id: item.id,
+                  name: item.name,
+                };
+                item.id = latestEpisode.body?.items[0]?.id;
+                item.name = latestEpisode.body?.items[0]?.name;
+                item.description = latestEpisode.body?.items[0]?.description;
+              }
+
+              return {
+                ...item,
+              };
+            }),
+          );
+
+          return {
+            ...list,
+            items: mappedListItems,
+          };
+        }),
+      );
 
       res.json({ lists });
     });
@@ -201,12 +232,13 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
         .catch((e) => console.log(e));
 
       const data = [];
-      Object.values(results.body).map((type) => {
+      Object.values(results?.body).map((type) => {
         type.items.map((item) => {
           const owner = {
             id: '',
             name: '',
           };
+          let description;
 
           if (item.type === 'album' || item.type === 'track') {
             owner.id = item.artists[0].id;
@@ -214,12 +246,23 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
           } else if (item.type === 'playlist') {
             owner.id = item.owner.id;
             owner.name = item.owner.display_name;
+          } else if (item.type === 'artist') {
+            owner.id = item.id;
+            owner.name = item.name;
+          }
+
+          if (item.type === 'album') {
+            description = `${owner.name}\n${dayjs(item.release_date).format(
+              'MMMM D, YYYY',
+            )}`;
+          } else if (item.type === 'artist') {
+            description = `${item.followers.total.toLocaleString()} followers`;
           }
 
           data.push({
             id: item.id,
             name: item.name,
-            description: item.description,
+            description: description ?? item.description,
             image: item.images?.length
               ? item.images[0].url
               : item.album?.images

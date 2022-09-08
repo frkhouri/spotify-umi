@@ -80,8 +80,9 @@ const ListDragAndDrop = ({ state, handlers }: ListDragAndDropProps) => {
 
 const useStyles = createStyles((theme) => ({
   listWrapper: {
-    height: '250px',
+    height: '260px',
     overflow: 'auto',
+    paddingTop: '10px',
     scrollbarWidth: 'none',
     '::-webkit-scrollbar': {
       display: 'none',

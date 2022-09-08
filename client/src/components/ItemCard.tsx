@@ -23,13 +23,21 @@ export const ItemCard = ({ item }: { item: ListItem }) => {
         <Text weight={500} size="sm" lineClamp={1}>
           {item.name}
         </Text>
-        <Text size="xs" lineClamp={2}>
-          {item.description}
-        </Text>
+        {item.description?.split('\n').map((text) => (
+          <Text size="xs" lineClamp={2}>
+            {text}
+          </Text>
+        ))}
       </Card.Section>
       <Card.Section withBorder>
         <Group align="center" position="apart" p="sm">
-          <Text weight={700} size="xs" color="dimmed">
+          <Text
+            weight={700}
+            size="xs"
+            color="dimmed"
+            lineClamp={1}
+            className={classes.ownerText}
+          >
             {item.owner?.name}
           </Text>
           <ActionIcon variant="outline" size={30} color={actionIconColor}>
@@ -50,6 +58,9 @@ const useStyles = createStyles(() => ({
   body: {
     marginTop: '-2px',
     height: '80px',
+  },
+  ownerText: {
+    maxWidth: '75%',
   },
 }));
 

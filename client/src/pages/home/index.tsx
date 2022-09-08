@@ -14,7 +14,7 @@ import {
 
 export default function HomePage() {
   const { theme } = useStyles();
-  const [data, setData] = useState<{ lists: List[] }>({ lists: [] });
+  const [homeData, setHomeData] = useState<{ lists: List[] }>({ lists: [] });
   const minThreshold = 0.8;
   const maxThreshold = 0.2;
   const menuIconColor =
@@ -31,7 +31,7 @@ export default function HomePage() {
   };
 
   const setItems = async (updatedList: List) => {
-    const newData = { ...data };
+    const newData = { ...homeData };
     const listIndex = newData.lists.findIndex(
       (list) => list._id === updatedList._id,
     );
@@ -43,14 +43,16 @@ export default function HomePage() {
         items: updatedList.items,
       })
       .then((res) => console.log(res));
-    setData(newData);
+    setHomeData(newData);
   };
 
   useEffect(() => {
     const getHomeData = async () => {
-      const res = await axios.get('/home');
-
-      setData(res.data);
+      const data = await axios
+        .get('/home')
+        .then((res) => res.data)
+        .catch((e) => console.log(e));
+      setHomeData(data);
     };
 
     getHomeData().catch((e) => console.log(e));
@@ -92,8 +94,8 @@ export default function HomePage() {
           menuItems={menuItems}
         />
         <HomeActions />
-        {data.lists &&
-          data.lists.map((list) => (
+        {homeData.lists &&
+          homeData.lists.map((list) => (
             <HorizontalList list={list} setItems={setItems} key={list._id} />
           ))}
       </Stack>

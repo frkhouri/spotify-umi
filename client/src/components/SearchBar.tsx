@@ -9,6 +9,7 @@ import {
   Input,
   Space,
   Text,
+  Transition,
 } from '@mantine/core';
 import axios from 'axios';
 import { forwardRef, useEffect, useState } from 'react';
@@ -73,7 +74,6 @@ export const SearchBar = ({
     'playlist',
     'track',
     'show',
-    'episode',
   ]);
   const [filterVisible, setFilterVisible] = useState(false);
   const { classes } = useStyles();
@@ -100,7 +100,7 @@ export const SearchBar = ({
             ...result,
             value: result.name,
             group: `${result.type}s`.toUpperCase(),
-            key: results.id,
+            key: result.id,
           })),
         );
     }, 750);
@@ -129,29 +129,41 @@ export const SearchBar = ({
           style={style}
           classNames={{ dropdown: classes.dropdown }}
         />
-        {showFilter && filterVisible && (
-          <Card shadow="xs" p="xs" className={classes.typeFilter}>
-            <Chip.Group
-              multiple
-              value={types}
-              noWrap
-              onChange={(v) => setTypes(v)}
+        <Transition
+          mounted={showFilter && filterVisible}
+          transition="slide-down"
+          duration={200}
+          timingFunction="ease"
+        >
+          {(styles) => (
+            <Card
+              shadow="xs"
+              p="xs"
+              style={styles}
+              className={classes.typeFilter}
             >
-              {chips.map((chip) => (
-                <Chip
-                  value={chip.value}
-                  variant="filled"
-                  size="xs"
-                  radius="sm"
-                  key={chip.value}
-                >
-                  {chip.text}
-                </Chip>
-              ))}
-              <Space w={1} h="xs" />
-            </Chip.Group>
-          </Card>
-        )}
+              <Chip.Group
+                multiple
+                value={types}
+                noWrap
+                onChange={(v) => setTypes(v)}
+              >
+                {chips.map((chip) => (
+                  <Chip
+                    value={chip.value}
+                    variant="filled"
+                    size="xs"
+                    radius="sm"
+                    key={chip.value}
+                  >
+                    {chip.text}
+                  </Chip>
+                ))}
+                <Space w={1} h="xs" />
+              </Chip.Group>
+            </Card>
+          )}
+        </Transition>
       </Input.Wrapper>
     </div>
   );
