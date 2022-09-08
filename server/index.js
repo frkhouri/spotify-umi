@@ -107,12 +107,15 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
         .refreshAccessToken()
         .catch((e) => console.log(e));
 
-      const { access_token, expires_in } = data.body;
+      if (data.body) {
+        const { access_token, expires_in } = data.body;
+        res.json({
+          accessToken: access_token,
+          expiresIn: expires_in,
+        });
+      }
 
-      res.json({
-        accessToken: access_token,
-        expiresIn: expires_in,
-      });
+      res.sendStatus(401);
     });
 
     app.get('/api/me', async (req, res) => {
@@ -134,16 +137,12 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
             list.items.map(async (item) => {
               if (item.type === 'show') {
                 const latestEpisode = await req.spotifyUser
-                  .getShowEpisodes(item.id, { limit: 1 })
+                  .getShowEpisodes(item.owner?.id, { limit: 1 })
                   .catch((e) => console.log(e));
 
-                item.owner = {
-                  id: item.id,
-                  name: item.name,
-                };
-                item.id = latestEpisode.body?.items[0]?.id;
-                item.name = latestEpisode.body?.items[0]?.name;
-                item.description = latestEpisode.body?.items[0]?.description;
+                item.id = latestEpisode?.body?.items[0]?.id;
+                item.name = latestEpisode?.body?.items[0]?.name;
+                item.description = latestEpisode?.body?.items[0]?.description;
               }
 
               return {
@@ -209,13 +208,41 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
     });
 
     app.patch('/api/lists/:listId', async (req, res) => {
+      const mappedItems = await Promise.all(
+        req.body?.items?.map(async (item) => {
+          if (item.type === 'show') {
+            const latestEpisode = await req.spotifyUser
+              .getShowEpisodes(item.id, { limit: 1 })
+              .catch((e) => console.log(e));
+
+            item.owner = {
+              id: item.id,
+              name: item.name,
+            };
+            item.id = latestEpisode?.body?.items[0]?.id;
+            item.name = latestEpisode?.body?.items[0]?.name;
+            item.description = latestEpisode?.body?.items[0]?.description;
+          }
+
+          return { ...item };
+        }),
+      );
+
+      const mappedList = {
+        ...req.body,
+        items: mappedItems,
+      };
+
       const updatedList = await listsCollection
         .findOneAndUpdate(
           {
             _id: mongodb.ObjectId(req.params.listId),
           },
           {
-            $set: { ...req.body },
+            $set: { ...mappedList },
+          },
+          {
+            returnDocument: 'after',
           },
         )
         .then((res) => res.value)
@@ -256,7 +283,7 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
               'MMMM D, YYYY',
             )}`;
           } else if (item.type === 'artist') {
-            description = `${item.followers.total.toLocaleString()} followers`;
+            description = `${item.followers?.total?.toLocaleString()} followers`;
           }
 
           data.push({

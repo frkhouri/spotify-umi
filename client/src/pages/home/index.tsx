@@ -31,19 +31,20 @@ export default function HomePage() {
   };
 
   const setItems = async (updatedList: List) => {
-    const newData = { ...homeData };
-    const listIndex = newData.lists.findIndex(
+    const updatedHomeData = { ...homeData };
+    const listIndex = updatedHomeData.lists.findIndex(
       (list) => list._id === updatedList._id,
     );
-    newData.lists[listIndex] = updatedList;
 
-    await axios
+    const returnedList = await axios
       .patch(`/lists/${updatedList._id}`, {
         name: updatedList.name,
         items: updatedList.items,
       })
-      .then((res) => console.log(res));
-    setHomeData(newData);
+      .then((res) => res.data);
+
+    updatedHomeData.lists[listIndex] = returnedList;
+    setHomeData(updatedHomeData);
   };
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export default function HomePage() {
         .get('/home')
         .then((res) => res.data)
         .catch((e) => console.log(e));
-      setHomeData(data);
+      setHomeData(data ?? { lists: [] });
     };
 
     getHomeData().catch((e) => console.log(e));
