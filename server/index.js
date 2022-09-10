@@ -1,15 +1,21 @@
-const Spotify = require('spotify-web-api-node');
-const path = require('path');
-const express = require('express');
-const buddyList = require('spotify-buddylist');
-const dayjs = require('dayjs');
-const relativeTime = require('dayjs/plugin/relativeTime');
-const mongodb = require('mongodb');
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
+import Spotify from 'spotify-web-api-node';
+import { resolve } from 'path';
+import express from 'express';
+import { getWebAccessToken, getFriendActivity } from 'spotify-buddylist';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime.js';
+import { MongoClient, ObjectId } from 'mongodb';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { setPlayback } from './utils/play.js';
 
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 dayjs.extend(relativeTime);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const PORT = process.env.PORT || 3001;
 
@@ -45,12 +51,12 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json());
-app.use(express.static(path.resolve(__dirname, '../client/dist')));
+app.use(express.static(resolve(__dirname, '../client/dist')));
 
 const generateRandomString = (N) =>
   (Math.random().toString(36) + Array(N).join('0')).slice(2, N + 2);
 
-mongodb.MongoClient.connect(process.env.MONGO_STRING)
+MongoClient.connect(process.env.MONGO_STRING)
   .then((client) => {
     console.log('Connected to Database');
 
@@ -126,7 +132,7 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
     app.get('/api/home', async (req, res) => {
       const retrievedLists = await listsCollection
         .find({
-          userId: mongodb.ObjectId(req.header('user-id')),
+          userId: ObjectId(req.header('user-id')),
         })
         .project({ userId: 0 })
         .toArray();
@@ -236,7 +242,7 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
       const updatedList = await listsCollection
         .findOneAndUpdate(
           {
-            _id: mongodb.ObjectId(req.params.listId),
+            _id: ObjectId(req.params.listId),
           },
           {
             $set: { ...mappedList },
@@ -310,12 +316,12 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
 
     app.get('/api/friends', async (req, res) => {
       const { spDcCookie } = req.query;
-      const { accessToken } = await buddyList
-        .getWebAccessToken(spDcCookie)
-        .catch((e) => console.log(e));
-      const data = await buddyList
-        .getFriendActivity(accessToken)
-        .catch((e) => console.log(e));
+      const { accessToken } = await getWebAccessToken(spDcCookie).catch((e) =>
+        console.log(e),
+      );
+      const data = await getFriendActivity(accessToken).catch((e) =>
+        console.log(e),
+      );
       console.log(data);
 
       const friendActivity = data.friends.map((friend) => {
@@ -372,7 +378,7 @@ mongodb.MongoClient.connect(process.env.MONGO_STRING)
     });
 
     app.get('*', (_req, res) => {
-      res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
+      res.sendFile(resolve(__dirname, '../client/dist', 'index.html'));
     });
 
     app.listen(PORT, () => {
