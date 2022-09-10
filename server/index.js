@@ -8,7 +8,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { setPlayback } from './utils/play.js';
+import { playEpisode, setPlayback } from './utils/play.js';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
@@ -196,6 +196,58 @@ MongoClient.connect(process.env.MONGO_STRING)
       await req.spotifyUser
         .play({ uris: recommendedTrackUris })
         .catch((e) => console.log(e));
+
+      res.send();
+    });
+
+    app.get('/api/type/:type/id/:id/play', async (req, res) => {
+      const { spotifyUser } = req;
+      const { type, id } = req.params;
+      const transfer = await setPlayback(spotifyUser).catch((e) =>
+        console.log(e),
+      );
+
+      if (transfer.status !== 204) {
+        res.status(transfer.status).json(transfer.body);
+      }
+
+      if (type === 'episode') {
+        await playEpisode(spotifyUser, id).catch((e) => {
+          console.log(e);
+          res.status(e.status).json(e.body);
+        });
+      } else {
+        if (type === 'playlist' || type === 'artist') {
+          await spotifyUser.setShuffle('true').catch((e) => {
+            console.log(e);
+            res.status(e.body?.error?.status ?? 400).json({
+              title: 'Could not play',
+              message: e.body?.error?.message,
+            });
+          });
+        } else {
+          await spotifyUser.setShuffle('false').catch((e) => {
+            console.log(e);
+            res.status(e.body?.error?.status ?? 400).json({
+              title: 'Could not play',
+              message: e.body?.error?.message,
+            });
+          });
+        }
+
+        await spotifyUser
+          .play({
+            context_uri: `spotify:${type}:${id}`,
+            ...(type === 'album' && { offset: { position: 0 } }),
+          })
+          .catch((e) => {
+            console.log(e);
+            res.status(e.body?.error?.status ?? 400).json({
+              title: 'Could not play',
+              message: e.body?.error?.message,
+            });
+          });
+      }
 
       res.send();
     });

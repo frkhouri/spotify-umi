@@ -7,12 +7,21 @@ import {
   Image,
   Text,
 } from '@mantine/core';
+import axios from 'axios';
 import { PlayerPlay } from 'tabler-icons-react';
 
 export const ItemCard = ({ item }: { item: ListItem }) => {
   const { classes, theme } = useStyles();
   const actionIconColor =
     theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 5 : 6];
+
+  const playItem = async () => {
+    await axios.get(
+      `/type/${item.type === 'show' ? 'episode' : item.type}/id/${
+        item.id
+      }/play`,
+    );
+  };
 
   return (
     <Card withBorder shadow="xs" radius="md">
@@ -46,6 +55,7 @@ export const ItemCard = ({ item }: { item: ListItem }) => {
               height={20}
               radius="md"
               color={actionIconColor}
+              onClick={playItem}
             />
           </ActionIcon>
         </Group>
