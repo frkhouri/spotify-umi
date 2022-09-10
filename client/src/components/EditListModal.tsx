@@ -35,7 +35,17 @@ const EditListModal = ({
   };
 
   const onSelectSearchResult = (item: ListItem) => {
-    handlers.append(item);
+    if (item.type === 'show') {
+      handlers.append({
+        ...item,
+        owner: {
+          id: item.id,
+          name: item.name,
+        },
+      });
+    } else {
+      handlers.append(item);
+    }
     setSearchBarOpen(false);
   };
 

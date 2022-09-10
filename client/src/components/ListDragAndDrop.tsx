@@ -20,7 +20,7 @@ const ListItem = ({ props }: DragAndDropListItem) => {
         <GripVertical size={18} />
       </div>
       <div>
-        <Text>{item.name}</Text>
+        <Text>{item.type === 'show' ? item.owner?.name : item.name}</Text>
       </div>
       <ActionIcon
         onClick={() => handlers.filter((listItem) => listItem.id !== item.id)}
