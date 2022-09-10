@@ -119,6 +119,8 @@ MongoClient.connect(process.env.MONGO_STRING)
           accessToken: access_token,
           expiresIn: expires_in,
         });
+
+        return;
       }
 
       res.sendStatus(401);
@@ -257,7 +259,7 @@ MongoClient.connect(process.env.MONGO_STRING)
         req.body?.items?.map(async (item) => {
           if (item.type === 'show') {
             const latestEpisode = await req.spotifyUser
-              .getShowEpisodes(item.id, { limit: 1 })
+              .getShowEpisodes(item.owner.id, { limit: 1 })
               .catch((e) => console.log(e));
 
             item.owner = {

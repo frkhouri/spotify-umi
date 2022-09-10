@@ -6,15 +6,16 @@ import {
   createStyles,
   Group,
   Menu,
+  Skeleton,
   Text,
 } from '@mantine/core';
 import { useState } from 'react';
-import { DotsVertical, Edit, EyeOff } from 'tabler-icons-react';
+import { DotsVertical, Edit } from 'tabler-icons-react';
 import EditListModal from './EditListModal';
-import ItemCard from './ItemCard';
+import { ItemCard, ItemCardSkeleton } from './ItemCard';
 
 export const HorizontalList = ({ list, setItems }: HorizontalListProps) => {
-  const { classes, theme } = useStyles();
+  const { classes } = useStyles();
   const [editModalOpen, setEditModalOpen] = useState(false);
 
   const menuItems = [
@@ -23,11 +24,11 @@ export const HorizontalList = ({ list, setItems }: HorizontalListProps) => {
       icon: <Edit />,
       onClick: () => setEditModalOpen(true),
     },
-    {
-      text: 'Hide',
-      icon: <EyeOff />,
-      // onClick: () => handleClick('max_energy', maxThreshold),
-    },
+    // {
+    //   text: 'Hide',
+    //   icon: <EyeOff />,
+    //   onClick: () => handleClick('max_energy', maxThreshold),
+    // },
   ];
 
   const onEditModalClose = () => {
@@ -76,12 +77,45 @@ export const HorizontalList = ({ list, setItems }: HorizontalListProps) => {
         align="start"
         classNames={{ root: classes.carouselRoot }}
       >
-        {list?.items?.length &&
-          list.items.map((item) => (
-            <Carousel.Slide className={classes.slide} key={item.id}>
-              <ItemCard item={item} />
-            </Carousel.Slide>
-          ))}
+        {list.items.map((item) => (
+          <Carousel.Slide className={classes.slide} key={item.id}>
+            <ItemCard item={item} />
+          </Carousel.Slide>
+        ))}
+      </Carousel>
+    </>
+  );
+};
+
+export const HorizontalListSkeleton = () => {
+  const { classes } = useStyles();
+
+  return (
+    <>
+      <Card p="lg" radius="md" withBorder>
+        <Card.Section withBorder className={classes.containerHeader}>
+          <Group position="apart">
+            <Skeleton height="25px" width="60%" />
+            <ActionIcon variant="default">
+              <DotsVertical height={16} />
+            </ActionIcon>
+          </Group>
+        </Card.Section>
+        <Card.Section className={classes.containerBody}></Card.Section>
+      </Card>
+      <Carousel
+        slideSize="70%"
+        slideGap="md"
+        dragFree
+        withControls={false}
+        align="start"
+        classNames={{ root: classes.carouselRoot }}
+      >
+        {[1, 2, 3, 4].map((item) => (
+          <Carousel.Slide className={classes.slide} key={item}>
+            <ItemCardSkeleton item={item} />
+          </Carousel.Slide>
+        ))}
       </Carousel>
     </>
   );

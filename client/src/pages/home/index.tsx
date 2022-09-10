@@ -1,5 +1,7 @@
 import { HomeActions, SplitButton } from '@/components';
-import HorizontalList from '@/components/HorizontalList';
+import HorizontalList, {
+  HorizontalListSkeleton,
+} from '@/components/HorizontalList';
 import { List } from '@/dtos';
 import { createStyles, Stack } from '@mantine/core';
 import axios from 'axios';
@@ -95,10 +97,13 @@ export default function HomePage() {
           menuItems={menuItems}
         />
         <HomeActions />
-        {homeData.lists &&
+        {homeData.lists?.length ? (
           homeData.lists.map((list) => (
             <HorizontalList list={list} setItems={setItems} key={list._id} />
-          ))}
+          ))
+        ) : (
+          <HorizontalListSkeleton />
+        )}
       </Stack>
     </>
   );

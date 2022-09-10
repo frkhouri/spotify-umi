@@ -5,6 +5,7 @@ import {
   createStyles,
   Group,
   Image,
+  Skeleton,
   Text,
 } from '@mantine/core';
 import axios from 'axios';
@@ -64,6 +65,29 @@ export const ItemCard = ({ item }: { item: ListItem }) => {
   );
 };
 
+export const ItemCardSkeleton = ({ item }: { item: number }) => {
+  const { classes } = useStyles();
+
+  return (
+    <Card withBorder shadow="xs" radius="md">
+      <Card.Section withBorder>
+        <Skeleton height="235px" />
+      </Card.Section>
+      <Card.Section p="sm" className={classes.body}>
+        <Skeleton height="22px" className={classes.skeletonText} />
+        <Skeleton height="15px" className={classes.skeletonText} />
+        <Skeleton height="15px" width="85%" className={classes.skeletonText} />
+      </Card.Section>
+      <Card.Section withBorder>
+        <Group align="center" position="apart" p="sm">
+          <Skeleton height="20px" width="60%" />
+          <Skeleton height="30px" width="30px" />
+        </Group>
+      </Card.Section>
+    </Card>
+  );
+};
+
 const useStyles = createStyles(() => ({
   body: {
     marginTop: '-2px',
@@ -71,6 +95,9 @@ const useStyles = createStyles(() => ({
   },
   ownerText: {
     maxWidth: '75%',
+  },
+  skeletonText: {
+    marginBottom: '2px',
   },
 }));
 
