@@ -30,6 +30,7 @@ export function HomeActions() {
           rightIcon={action.icon}
           variant="default"
           classNames={{ inner: classes.button }}
+          key={action.text}
         >
           {action.text}
         </Button>

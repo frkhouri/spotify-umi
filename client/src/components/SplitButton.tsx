@@ -10,29 +10,6 @@ import {
 } from '@mantine/core';
 import { ChevronDown } from 'tabler-icons-react';
 
-const useStyles = createStyles((theme) => ({
-  button: {
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-
-  menuControl: {
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-    border: 0,
-    borderLeft: `1px solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[7] : 'white'
-    }`,
-  },
-
-  outlinedMenuControl: {
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-    border: `1px solid`,
-    marginLeft: '1px',
-  },
-}));
-
 type SplitButtonProps = {
   text?: string;
   fullWidth?: boolean;
@@ -94,3 +71,26 @@ export function SplitButton({
     </Group>
   );
 }
+
+const useStyles = createStyles((theme) => ({
+  button: {
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+
+  menuControl: {
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    border: 0,
+    borderLeft: `1px solid ${
+      theme.colorScheme === 'dark' ? theme.colors.dark[7] : 'white'
+    }`,
+  },
+
+  outlinedMenuControl: {
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    border: `1px solid`,
+    marginLeft: '1px',
+  },
+}));

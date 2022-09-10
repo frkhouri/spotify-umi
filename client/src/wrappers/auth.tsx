@@ -1,4 +1,3 @@
-import { setLocalStorage } from '@/utils';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { history, Outlet } from 'umi';
@@ -7,9 +6,11 @@ import { history, Outlet } from 'umi';
 axios.defaults.baseURL = 'https://spotify-4-app.herokuapp.com/api';
 axios.interceptors.request.use(async (config) => {
   const accessToken = await getAccessToken();
+  const userId = localStorage.getItem('user_id');
 
-  if (config.headers && accessToken) {
+  if (config.headers && accessToken && userId) {
     config.headers['Access-Token'] = accessToken;
+    config.headers['User-Id'] = userId;
   }
 
   return config;
@@ -42,7 +43,11 @@ const getAccessToken = async () => {
     const expiryDate = new Date();
     expiryDate.setSeconds(expiryDate.getSeconds() + Number(expiresIn));
     if (accessToken && expiryDate) {
-      setLocalStorage({ accessToken, expiryDate });
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem(
+        'expiry_date',
+        `${expiryDate.toDateString()} ${expiryDate.toTimeString()}`,
+      );
     } else {
       history.replace('/login');
     }

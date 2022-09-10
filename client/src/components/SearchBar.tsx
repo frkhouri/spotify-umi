@@ -1,7 +1,6 @@
-import { SearchResult } from '@/dtos';
+import { ListItem, SearchResult } from '@/dtos';
 import {
   Autocomplete,
-  AutocompleteItem,
   Avatar,
   Card,
   Chip,
@@ -10,13 +9,14 @@ import {
   Input,
   Space,
   Text,
+  Transition,
 } from '@mantine/core';
 import axios from 'axios';
 import { forwardRef, useEffect, useState } from 'react';
 import { Search } from 'tabler-icons-react';
 
-const SearchResultItem = forwardRef<HTMLDivElement, SearchResult>(
-  ({ name, image, ...others }: SearchResult, ref) => (
+const SearchResultItem = forwardRef<HTMLDivElement, ListItem>(
+  ({ name, image, ...others }: ListItem, ref) => (
     <div ref={ref} style={{ width: '95%', margin: '-6px' }} {...others}>
       <Group noWrap>
         <Avatar src={image} />
@@ -56,13 +56,25 @@ const chips = [
 ];
 
 type SearchBarProps = {
-  onItemSelect: (item: AutocompleteItem) => void;
+  showFilter?: boolean;
+  onItemSelect: (item: ListItem) => void;
+  style?: React.CSSProperties;
 };
 
-export const SearchBar = ({ onItemSelect }: SearchBarProps) => {
+export const SearchBar = ({
+  showFilter = true,
+  onItemSelect,
+  style,
+}: SearchBarProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
-  const [types, setTypes] = useState(['album', 'artist', 'playlist']);
+  const [types, setTypes] = useState([
+    'album',
+    'artist',
+    'playlist',
+    'track',
+    'show',
+  ]);
   const [filterVisible, setFilterVisible] = useState(false);
   const { classes } = useStyles();
 
@@ -84,10 +96,11 @@ export const SearchBar = ({ onItemSelect }: SearchBarProps) => {
 
       results &&
         setData(
-          results?.map((result: SearchResult) => ({
+          results?.map((result: ListItem) => ({
             ...result,
             value: result.name,
             group: `${result.type}s`.toUpperCase(),
+            key: result.id,
           })),
         );
     }, 750);
@@ -112,32 +125,45 @@ export const SearchBar = ({ onItemSelect }: SearchBarProps) => {
           maxDropdownHeight="400px"
           onDropdownOpen={() => setFilterVisible(true)}
           onDropdownClose={() => setFilterVisible(false)}
-          onItemSubmit={(item) => onItemSelect(item)}
+          onItemSubmit={(item) => onItemSelect(item as unknown as ListItem)}
+          style={style}
           classNames={{ dropdown: classes.dropdown }}
         />
-        {filterVisible && (
-          <Card shadow="md" p="xs" className={classes.typeFilter}>
-            <Chip.Group
-              multiple
-              value={types}
-              noWrap
-              onChange={(v) => setTypes(v)}
+        <Transition
+          mounted={showFilter && filterVisible}
+          transition="slide-down"
+          duration={200}
+          timingFunction="ease"
+        >
+          {(styles) => (
+            <Card
+              shadow="xs"
+              p="xs"
+              style={styles}
+              className={classes.typeFilter}
             >
-              {chips.map((chip) => (
-                <Chip
-                  value={chip.value}
-                  variant="filled"
-                  size="xs"
-                  radius="sm"
-                  key={chip.value}
-                >
-                  {chip.text}
-                </Chip>
-              ))}
-              <Space w={1} h="xs" />
-            </Chip.Group>
-          </Card>
-        )}
+              <Chip.Group
+                multiple
+                value={types}
+                noWrap
+                onChange={(v) => setTypes(v)}
+              >
+                {chips.map((chip) => (
+                  <Chip
+                    value={chip.value}
+                    variant="filled"
+                    size="xs"
+                    radius="sm"
+                    key={chip.value}
+                  >
+                    {chip.text}
+                  </Chip>
+                ))}
+                <Space w={1} h="xs" />
+              </Chip.Group>
+            </Card>
+          )}
+        </Transition>
       </Input.Wrapper>
     </div>
   );

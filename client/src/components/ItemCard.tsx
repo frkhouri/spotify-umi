@@ -1,4 +1,4 @@
-import { Playlist } from '@/dtos';
+import { ListItem } from '@/dtos';
 import {
   ActionIcon,
   Card,
@@ -7,12 +7,21 @@ import {
   Image,
   Text,
 } from '@mantine/core';
+import axios from 'axios';
 import { PlayerPlay } from 'tabler-icons-react';
 
-export const HorizontalList = ({ item }: { item: Playlist }) => {
+export const ItemCard = ({ item }: { item: ListItem }) => {
   const { classes, theme } = useStyles();
   const actionIconColor =
     theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 5 : 6];
+
+  const playItem = async () => {
+    await axios.get(
+      `/type/${item.type === 'show' ? 'episode' : item.type}/id/${
+        item.id
+      }/play`,
+    );
+  };
 
   return (
     <Card withBorder shadow="xs" radius="md">
@@ -23,14 +32,22 @@ export const HorizontalList = ({ item }: { item: Playlist }) => {
         <Text weight={500} size="sm" lineClamp={1}>
           {item.name}
         </Text>
-        <Text size="xs" lineClamp={2}>
-          {item.description}
-        </Text>
+        {item.description?.split('\n').map((text) => (
+          <Text size="xs" lineClamp={2}>
+            {text}
+          </Text>
+        ))}
       </Card.Section>
       <Card.Section withBorder>
         <Group align="center" position="apart" p="sm">
-          <Text weight={700} size="xs" color="dimmed">
-            {item.owner.name}
+          <Text
+            weight={700}
+            size="xs"
+            color="dimmed"
+            lineClamp={1}
+            className={classes.ownerText}
+          >
+            {item.owner?.name}
           </Text>
           <ActionIcon variant="outline" size={30} color={actionIconColor}>
             <PlayerPlay
@@ -38,6 +55,7 @@ export const HorizontalList = ({ item }: { item: Playlist }) => {
               height={20}
               radius="md"
               color={actionIconColor}
+              onClick={playItem}
             />
           </ActionIcon>
         </Group>
@@ -49,8 +67,11 @@ export const HorizontalList = ({ item }: { item: Playlist }) => {
 const useStyles = createStyles(() => ({
   body: {
     marginTop: '-2px',
-    height: '59px',
+    height: '80px',
+  },
+  ownerText: {
+    maxWidth: '75%',
   },
 }));
 
-export default HorizontalList;
+export default ItemCard;

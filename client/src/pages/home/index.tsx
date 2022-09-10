@@ -1,5 +1,6 @@
 import { HomeActions, SplitButton } from '@/components';
 import HorizontalList from '@/components/HorizontalList';
+import { List } from '@/dtos';
 import { createStyles, Stack } from '@mantine/core';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -13,7 +14,7 @@ import {
 
 export default function HomePage() {
   const { theme } = useStyles();
-  const [data, setData] = useState({});
+  const [homeData, setHomeData] = useState<{ lists: List[] }>({ lists: [] });
   const minThreshold = 0.8;
   const maxThreshold = 0.2;
   const menuIconColor =
@@ -29,11 +30,30 @@ export default function HomePage() {
     });
   };
 
+  const setItems = async (updatedList: List) => {
+    const updatedHomeData = { ...homeData };
+    const listIndex = updatedHomeData.lists.findIndex(
+      (list) => list._id === updatedList._id,
+    );
+
+    const returnedList = await axios
+      .patch(`/lists/${updatedList._id}`, {
+        name: updatedList.name,
+        items: updatedList.items,
+      })
+      .then((res) => res.data);
+
+    updatedHomeData.lists[listIndex] = returnedList;
+    setHomeData(updatedHomeData);
+  };
+
   useEffect(() => {
     const getHomeData = async () => {
-      const res = await axios.get('/home');
-
-      setData(res.data);
+      const data = await axios
+        .get('/home')
+        .then((res) => res.data)
+        .catch((e) => console.log(e));
+      setHomeData(data ?? { lists: [] });
     };
 
     getHomeData().catch((e) => console.log(e));
@@ -75,11 +95,10 @@ export default function HomePage() {
           menuItems={menuItems}
         />
         <HomeActions />
-        <HorizontalList
-          heading="Playlists"
-          type="playlists"
-          items={data.playlists}
-        />
+        {homeData.lists &&
+          homeData.lists.map((list) => (
+            <HorizontalList list={list} setItems={setItems} key={list._id} />
+          ))}
       </Stack>
     </>
   );
