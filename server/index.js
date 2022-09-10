@@ -168,27 +168,12 @@ MongoClient.connect(process.env.MONGO_STRING)
     });
 
     app.get('/api/im-feeling-lucky', async (req, res) => {
-      const devices = await req.spotifyUser
-        .getMyDevices()
-        .catch((e) => console.log(e));
+      const transfer = await setPlayback(req.spotifyUser).catch((e) =>
+        console.log(e),
+      );
 
-      if (devices.body.devices.length === 0) {
-        res
-          .status(400)
-          .json({ title: 'Could not play', message: 'No devices found' });
-        return;
-      }
-
-      const playback = await req.spotifyUser
-        .getMyCurrentPlaybackState()
-        .catch((e) => console.log(e));
-
-      if (playback.statusCode === 204) {
-        if (devices.body.devices.length === 1) {
-          await req.spotifyUser
-            .transferMyPlayback([devices.body.devices[0].id])
-            .catch((e) => console.log(e));
-        }
+      if (transfer.status !== 204) {
+        res.status(transfer.status).json(transfer.body);
       }
 
       const recentTracks = await req.spotifyUser
@@ -208,7 +193,9 @@ MongoClient.connect(process.env.MONGO_STRING)
         (track) => track.uri,
       );
 
-      await req.spotifyUser.play({ uris: recommendedTrackUris });
+      await req.spotifyUser
+        .play({ uris: recommendedTrackUris })
+        .catch((e) => console.log(e));
 
       res.send();
     });
