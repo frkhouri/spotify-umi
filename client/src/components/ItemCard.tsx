@@ -33,8 +33,8 @@ export const ItemCard = ({ item }: { item: ListItem }) => {
         <Text weight={500} size="sm" lineClamp={1}>
           {item.name}
         </Text>
-        {item.description?.split('\n').map((text) => (
-          <Text size="xs" lineClamp={2}>
+        {item.description?.split('\n').map((text, i) => (
+          <Text size="xs" lineClamp={2} key={i}>
             {text}
           </Text>
         ))}
@@ -65,7 +65,7 @@ export const ItemCard = ({ item }: { item: ListItem }) => {
   );
 };
 
-export const ItemCardSkeleton = ({ item }: { item: number }) => {
+export const ItemCardSkeleton = () => {
   const { classes } = useStyles();
 
   return (
