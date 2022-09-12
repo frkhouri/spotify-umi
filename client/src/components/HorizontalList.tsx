@@ -113,7 +113,7 @@ export const HorizontalListSkeleton = () => {
       >
         {[1, 2, 3, 4].map((item) => (
           <Carousel.Slide className={classes.slide} key={item}>
-            <ItemCardSkeleton item={item} />
+            <ItemCardSkeleton />
           </Carousel.Slide>
         ))}
       </Carousel>
@@ -121,7 +121,7 @@ export const HorizontalListSkeleton = () => {
   );
 };
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   carouselRoot: {
     margin: '0px -8px -330px -8px',
     padding: '0px 23px',
