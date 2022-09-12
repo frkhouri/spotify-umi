@@ -269,6 +269,7 @@ MongoClient.connect(process.env.MONGO_STRING)
             item.id = latestEpisode?.body?.items[0]?.id;
             item.name = latestEpisode?.body?.items[0]?.name;
             item.description = latestEpisode?.body?.items[0]?.description;
+            item.type = 'episode';
           }
 
           return { ...item };
