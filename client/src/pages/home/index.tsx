@@ -97,13 +97,11 @@ export default function HomePage() {
           menuItems={menuItems}
         />
         <HomeActions />
-        {homeData.lists?.length ? (
-          homeData.lists.map((list) => (
-            <HorizontalList list={list} setItems={setItems} key={list._id} />
-          ))
-        ) : (
-          <HorizontalListSkeleton />
-        )}
+        {homeData.lists?.length
+          ? homeData.lists.map((list) => (
+              <HorizontalList list={list} setItems={setItems} key={list._id} />
+            ))
+          : [1, 2].map((_e, i) => <HorizontalListSkeleton key={i} />)}
       </Stack>
     </>
   );
