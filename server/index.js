@@ -143,7 +143,7 @@ MongoClient.connect(process.env.MONGO_STRING)
         retrievedLists.map(async (list) => {
           const mappedListItems = await Promise.all(
             list.items.map(async (item) => {
-              if (item.type === 'show') {
+              if (item.type === 'show' || item.type === 'episode') {
                 const latestEpisode = await req.spotifyUser
                   .getShowEpisodes(item.owner?.id, { limit: 1 })
                   .catch((e) => console.log(e));
@@ -269,7 +269,6 @@ MongoClient.connect(process.env.MONGO_STRING)
             item.id = latestEpisode?.body?.items[0]?.id;
             item.name = latestEpisode?.body?.items[0]?.name;
             item.description = latestEpisode?.body?.items[0]?.description;
-            item.type = 'episode';
           }
 
           return { ...item };

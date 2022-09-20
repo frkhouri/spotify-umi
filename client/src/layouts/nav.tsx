@@ -1,4 +1,4 @@
-import { AppHeader, Navbar } from '@/components';
+import { AppHeader, BottomNavbar } from '@/components';
 import { Affix } from '@mantine/core';
 import { Outlet } from 'umi';
 
@@ -7,8 +7,8 @@ const Layout = () => {
     <div>
       <AppHeader />
       <Outlet />
-      <Affix position={{ bottom: 0, left: 0, right: 0 }}>
-        <Navbar />
+      <Affix position={{ bottom: -2, left: 0, right: 0 }}>
+        <BottomNavbar />
       </Affix>
     </div>
   );

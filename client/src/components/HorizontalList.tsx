@@ -123,7 +123,7 @@ export const HorizontalListSkeleton = () => {
 
 const useStyles = createStyles(() => ({
   carouselRoot: {
-    margin: '0px -8px -330px -8px',
+    margin: '0px -8px -412px -8px',
     padding: '0px 23px',
     top: '-405px',
     height: '400px',
