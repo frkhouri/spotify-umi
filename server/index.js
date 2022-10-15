@@ -213,29 +213,28 @@ MongoClient.connect(process.env.MONGO_STRING)
         res.status(transfer.status).json(transfer.body);
       }
 
-      if (type === 'episode') {
-        await playEpisode(spotifyUser, id).catch((e) => {
-          console.log(e);
-          res.status(e.status).json(e.body);
-        });
+      if (type === 'episode' || type === 'track') {
+        await spotifyUser
+          .play({
+            uris: [`spotify:${type}:${id}`],
+          })
+          .catch((e) => {
+            console.log(e);
+            res.status(e.body?.error?.status ?? 400).json({
+              title: 'Could not play',
+              message: e.body?.error?.message,
+            });
+          });
       } else {
-        if (type === 'playlist' || type === 'artist') {
-          await spotifyUser.setShuffle('true').catch((e) => {
+        await spotifyUser
+          .setShuffle(type === 'playlist' || type === 'artist')
+          .catch((e) => {
             console.log(e);
             res.status(e.body?.error?.status ?? 400).json({
               title: 'Could not play',
               message: e.body?.error?.message,
             });
           });
-        } else {
-          await spotifyUser.setShuffle('false').catch((e) => {
-            console.log(e);
-            res.status(e.body?.error?.status ?? 400).json({
-              title: 'Could not play',
-              message: e.body?.error?.message,
-            });
-          });
-        }
 
         await spotifyUser
           .play({
